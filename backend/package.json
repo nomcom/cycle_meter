@@ -1,4 +1,8 @@
 {
+  "name": "backend",
+  "description": "backend パッケージ",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
@@ -10,6 +14,15 @@
     "start:dev": "npm run build && npm run test && cross-env DEBUG=true node dist/server.js",
     "db:init:e2e": "tool\\db_init_e2e.bat",
     "db:init:dev": "tool\\db_init_dev.bat"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.11.0",
+    "common-library": "file:../common-library",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^6.15.0",
+    "log4js": "^6.7.1",
+    "node-windows": "^1.0.0-beta.8"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
@@ -30,14 +43,5 @@
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "@prisma/client": "^4.11.0",
-    "common-library": "file:../common-library",
-    "express": "^4.18.2",
-    "express-async-errors": "^3.1.1",
-    "express-validator": "^6.15.0",
-    "log4js": "^6.7.1",
-    "node-windows": "^1.0.0-beta.8"
   }
 }

@@ -1,11 +1,8 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { Error404 } from "./components/elements/common/Error404";
-
 import routes from "~react-pages";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setApiServer } from "common-library";
 
 const App = () => {
@@ -29,15 +26,12 @@ const App = () => {
 };
 
 setApiServer("http://localhost:3000/");
-const queryClient = new QueryClient();
 
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <React.StrictMode>
-      <Router>
-        <App />
-      </Router>
-    </React.StrictMode>
-  </QueryClientProvider>,
+  <React.StrictMode>
+    <Router>
+      <App />
+    </Router>
+  </React.StrictMode>,
   document.getElementById("root")
 );
