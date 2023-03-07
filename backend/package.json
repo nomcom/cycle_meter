@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
-    "common-library": "file:../library",
+    "common-library": "file:../common-library",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "express-validator": "^6.15.0",
