@@ -6,6 +6,7 @@ import { Error404 } from "./components/elements/common/Error404";
 
 import routes from "~react-pages";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { setApiServer } from "common-library";
 
 const App = () => {
   // 読み込み中(コンポーネントがPromiseをthrowした)場合に、ローディングを表示
@@ -27,7 +28,7 @@ const App = () => {
   );
 };
 
-axios.defaults.baseURL = "http://localhost:3000";
+setApiServer("http://localhost:3000/");
 const queryClient = new QueryClient();
 
 ReactDOM.render(
