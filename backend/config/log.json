@@ -1,0 +1,28 @@
+{
+    "appenders": {
+        "console": {
+            "type": "console"
+        },
+        "system": {
+            "type": "dateFile",
+            "filename": "log/system.log",
+            "pattern": "-yyyy-MM-dd",
+            "numBackups": 10,
+            "keepFileExt": true,
+            "layout": {
+                "type": "pattern",
+                "pattern": "%d{yyyy-MM-dd hh:mm:ss}[%p]%m - %f:%l"
+            }
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": [
+                "console",
+                "system"
+            ],
+            "level": "all",
+            "enableCallStack": true
+        }
+    }
+}

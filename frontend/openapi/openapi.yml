@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: REST API仕様
+  description: "BackEndのREST API仕様です"
+  version: 1.0.0
+servers:
+  - url: http://localhost:{port}/
+    description: 開発環境
+    variables:
+      port:
+        enum:
+          - '3000'
+        default: '3000'
+        description: ポート番号
+tags: 
+- name: marker
+  description: Marker操作のAPIグループ
+
+paths:
+  /marker/create:
+    $ref: "./components/requests/marker_create.yml"
+  /marker/{id}:
+    $ref: "./components/requests/marker_by_id.yml"

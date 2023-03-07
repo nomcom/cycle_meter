@@ -1,0 +1,34 @@
+type: object
+description: Markerオブジェクト
+required:
+  - id
+  - datetime
+properties:
+  id:
+    description: ID
+    type: integer
+    format: int64
+    example: 100
+  datetime:
+    description: 登録日付(Unixミリ秒)
+    type: integer
+    format: int64
+    example: 1678150618427
+  lat:
+    description: 緯度(latitude)
+    type: number
+    example: 35.360652
+  lng:
+    description: 経度(longitude)
+    type: number
+    example: 138.727323
+  alt:
+    description: 高度(altitude)
+    type: number
+    example: 3772.123
+  comment:
+      $ref: "./Comment.yml"
+  imageId:
+    description: 画像ID
+    type: integer
+    example: 100101

@@ -1,0 +1,11 @@
+import { Comment } from "./comment"
+
+model Marker {
+  id       Int      @id @default(autoincrement())
+  datetime DateTime
+  lat      Float?
+  lng      Float?
+  alt      Float?
+  comment  Comment?
+  imageId  Int?
+}

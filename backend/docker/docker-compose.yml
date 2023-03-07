@@ -1,0 +1,12 @@
+version: '3'
+services:
+  dbsv:
+    build: ./db_server
+    container_name: db_server_container
+    ports:
+     - "35432:5432"
+  dbsv_append:
+    build: ./db_server_append
+    container_name: db_server_append_container
+    ports:
+     - "31433:1433"

@@ -1,0 +1,8 @@
+*.db
+*.db-journal
+generated
+
+# schema-import(分割したschemaのマージ)用
+# datasourcesからコピーされることを想定
+parts/**/ignore/*
+!parts/**/ignore/.gitkeep

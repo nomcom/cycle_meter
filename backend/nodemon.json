@@ -1,0 +1,7 @@
+{
+    "watch": [
+        "./src"
+    ],
+    "ext": "ts",
+    "exec": "cross-env DEBUG=true node --loader ts-node/esm ./src/server.ts"
+}

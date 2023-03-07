@@ -1,0 +1,13 @@
+type: object
+description: Commentオブジェクト
+properties:
+  id:
+    description: ID
+    type: integer
+    format: int64
+    example: 100
+  comment:
+    description: コメント文字列
+    type: string
+    example: あいうえお abc 12345
+    

@@ -1,0 +1,21 @@
+get:
+  operationId: marker_by_id
+  summary: Marker取得API(ID指定)
+  description: Marker取得API(ID指定)です
+  tags:
+    - marker
+  parameters:
+    - name: id
+      in: path
+      required: true
+      example: 100
+      schema:
+        type: integer
+  responses:
+    "200":
+      description: 成功した場合
+      content:
+        application/json:
+          schema:
+            $ref: "../Marker.yml"
+            
