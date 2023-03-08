@@ -8,8 +8,8 @@
     "dev": "cross-env NODE_ENV=development nodemon",
     "clean": "rimraf dist coverage",
     "lint": "eslint src --ext ts,tsx",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "build": "npm run clean && tsc",
-    "test": "npm run lint && cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "start": "node dist/server.js",
     "start:dev": "cross-env DEBUG=true node dist/server.js",
     "db:init:dev": "tool\\db_init_dev.bat"

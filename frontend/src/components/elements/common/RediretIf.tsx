@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
  */
 export const RediretIf = (props: {
   redirectTo: string | ReactElement;
-  ifFunc: Function | undefined;
+  ifFunc?: () => boolean | undefined;
   children: ReactElement[];
 }): ReactElement => {
   if (!props.ifFunc || props.ifFunc()) {

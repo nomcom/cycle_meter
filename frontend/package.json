@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "lint": "eslint src --ext ts,tsx",
     "test": "vitest run",
     "build": "tsc && vite build",
     "preview": "vite preview",
@@ -24,6 +25,9 @@
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react": "^3.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint": "^8.34.0",
     "autoprefixer": "^10.4.13",
     "cpx": "^1.5.0",
     "cross-env": "^7.0.3",
