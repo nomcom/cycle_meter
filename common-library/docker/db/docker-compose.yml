@@ -1,0 +1,12 @@
+version: '3'
+services:
+  dbsv:
+    build: ./postgres
+    container_name: dbsv
+    ports:
+     - "35432:5432"
+  dbsv_append:
+    build: ./mssqlserver
+    container_name: dbsv_append
+    ports:
+     - "31433:1433"
