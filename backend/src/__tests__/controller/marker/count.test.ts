@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest, describe, test, expect } from "@jest/globals";
 import { prismaMock } from "../../prismaMock.js";
 import { handler } from "../../../controller/marker/count.js";
 
@@ -7,7 +7,8 @@ describe("/marker/count", () => {
     // 準備
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prismaMock.marker.count = jest.fn() as any;
-    prismaMock.marker.count.mockResolvedValue(10);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (prismaMock.marker.count as any).mockResolvedValue(10);
 
     // Mock関数
     const mockFunction = jest.fn();

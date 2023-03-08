@@ -1,3 +1,4 @@
+import { describe, test, expect } from "@jest/globals";
 import { strUtil } from "../../util/index.js";
 
 describe("strUtil isTrue", () => {
