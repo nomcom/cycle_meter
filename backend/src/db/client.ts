@@ -1,16 +1,16 @@
-import { strUtil } from "../util/index.js";
 import { logger } from "../common/logger.js";
 import { PrismaClient } from "../../prisma/generated/db/index.js";
 import { PrismaClient as PrismaClientAppend } from "../../prisma/generated/db_append/index.js";
 import { PrismaClient as PrismaClient_DEBUG } from "../../prisma/dev/generated/db/index.js";
 import { PrismaClient as PrismaClientAppend_DEBUG } from "../../prisma/dev/generated/db_append/index.js";
+import { util } from "common-library";
 
 // デフォルト
 let cCLass1 = PrismaClient;
 let cClass2 = PrismaClientAppend;
 
 // 環境変数によって変更
-if (strUtil.isTrue(process.env.DEBUG)) {
+if (util.strUtil.isTrue(process.env.DEBUG)) {
   // デバッグモード
   logger.info(`デバッグ用DBで実行(${process.env.DEBUG})`);
   // ※注意:接続先DBが違うだけで、DBのschemaは(それほど)変わらないという前提で型違いのエラーを無視

@@ -29,7 +29,8 @@ export default {
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/app.ts',
+    '!src/rest/**/*',
   ],
   // 出力するファイルを格納するディレクトリ
-  coverageDirectory: "../doc/coverage/backend"
+  coverageDirectory: "../doc/coverage/common-library"
 }

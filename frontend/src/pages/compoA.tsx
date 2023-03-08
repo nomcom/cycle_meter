@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 import { useLocation } from "react-router";
-import { markerCreate } from "common-library";
+import { api } from "common-library";
 
 function Compo() {
   const location = useLocation();
   const [title, setTitle] = useState<string>();
 
   const onSubmit = useCallback(async () => {
-    const response = await markerCreate({
+    const response = await api.markerCreate({
       datetime: new Date().getTime(),
       lat: 1.0,
       lng: 2.0,
@@ -15,7 +15,7 @@ function Compo() {
     // 成功時の処理
     const data = response.data;
     setTitle(`${data.id}`);
-  }, [markerCreate]);
+  }, [api.markerCreate]);
 
   return (
     <>

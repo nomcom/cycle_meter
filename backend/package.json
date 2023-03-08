@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf dist",
     "lint": "eslint src --ext ts,tsx",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "build": "npm run clean && tsc",
