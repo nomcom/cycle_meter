@@ -31,7 +31,7 @@ post:
               type: number
               example: 3772.123
             comment:
-                $ref: "../Comment.yml"
+                $ref: "../schemas/comment.yml"
             imageId:
               description: 画像ID
               type: integer
@@ -39,9 +39,4 @@ post:
 
   responses:
     "200":
-      description: 成功した場合
-      content:
-        application/json:
-          schema:
-            $ref: "../Marker.yml"
-            
+      $ref: "../responses/marker_single.yml"

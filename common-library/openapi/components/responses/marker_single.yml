@@ -1,0 +1,6 @@
+description: Markerオブジェクト1応答
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/marker.yml"
+      

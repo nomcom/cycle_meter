@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useLocation } from "react-router";
-import { api } from "common-library";
+import { api, util } from "common-library";
 
 function Compo() {
   const location = useLocation();
@@ -19,7 +19,9 @@ function Compo() {
 
   return (
     <>
-      <h2>CompoA Created:{title}</h2>
+      <h2>
+        CompoA Created:{title}:{util.strUtil.isTrue(title)}
+      </h2>
       <h3>{location.pathname}</h3>
       <button title="Submit" onClick={onSubmit} />
       <img src="/vite.svg" className="logo" alt="Vite logo" />

@@ -3,13 +3,14 @@ import { defineConfig } from "orval";
 export default defineConfig({
   restapi: {
     input: {
+      // validation: true,
       target: "./openapi/openapi.yml",
     },
     output: {
-      mode: "split",
-      target: "./src/rest/api.ts",
-      schemas: "./src/rest/model",
-      mock: true,
+      mode: "single",
+      workspace: "src/",
+      target: "rest/api.ts",
+      // mock: true,
       clean: true,
     },
   },

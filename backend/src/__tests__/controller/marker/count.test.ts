@@ -21,6 +21,6 @@ describe("/marker/count", () => {
 
     // 確認
     expect(mockFunction.mock.calls.length).toBe(1); // mockFunction関数は1度呼び出された
-    expect(mockFunction.mock.calls[0]).toEqual({ count: 10 }); // mockFunction関数が1度呼び出された際の引数
+    expect(mockFunction.mock.calls[0]).toEqual([{ count: 10 }]); // mockFunction関数が1度呼び出された際の引数
   });
 });
