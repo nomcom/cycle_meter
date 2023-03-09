@@ -11,7 +11,7 @@
     "test": "vitest run --coverage",
     "build": "npm run clean && tsc && vite build",
     "preview": "vite preview",
-    "deploy": "cpx dist/**/* ../backend/frontend"
+    "deploy": "cpx \"dist/**/*\" \"../backend/frontend\""
   },
   "dependencies": {
     "common-library": "file:../common-library",
