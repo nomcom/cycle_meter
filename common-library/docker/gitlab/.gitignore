@@ -1,0 +1,5 @@
+data
+gitlab-secrets.json
+initial_root_password
+trusted-certs
+ssh*

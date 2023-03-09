@@ -1,0 +1,17 @@
+version: '3'
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:15.6.8-ce.0'
+    environment:
+      GITLAB_SKIP_UNMIGRATED_DATA_CHECK: "true"
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://127.0.0.1:8080'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        nginx['listen_port'] = 80
+    ports:
+      - '8080:80'
+      - '2222:22'
+    volumes:
+      - './volume/config:/etc/gitlab'
+      - './volume/logs:/var/log/gitlab'
+      - './volume/data:/var/opt/gitlab'
