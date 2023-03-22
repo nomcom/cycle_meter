@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { StyleSheet, Text, View, Button } from "react-native";
+import { api, util } from "common-library";
 
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
@@ -46,7 +47,9 @@ export default function App() {
           if (location) {
             console.log("Location in background", location.coords);
             setText(
-              `Location in background:${JSON.stringify(location.coords)}`
+              `Location in background (${util.strUtil.isTrue(
+                "True"
+              )}):${JSON.stringify(location.coords)}`
             );
           }
         }
