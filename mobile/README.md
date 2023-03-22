@@ -18,3 +18,14 @@ npm install react-native-maps
 ```
 npm run android
 ```
+
+
+# 開発時
+
+1. Android Studio 起動
+    1. Virtual Device Manager 起動
+    2. 対象の Device 起動
+
+2. プロジェクト起動
+```
+npm run android
