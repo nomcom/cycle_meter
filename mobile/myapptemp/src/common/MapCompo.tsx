@@ -13,9 +13,11 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { LocationObject } from "expo-location";
 import { PROVIDER_GOOGLE } from "react-native-maps";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const LOCATION_TASK_NAME = "BACKGROUND_LOCATION_TASK";
-let LOC_CALLBACKS: ((location: LocationObject) => void)[] = [];
+
+let LOC_CALLBACK: ((location: LocationObject) => void) | null = null;
 let MAPVIEW: MapView | null = null;
 
 // Define the background task for location tracking
@@ -30,16 +32,19 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     const location = locations[0];
     if (location) {
       console.log("Location in background", location.coords);
-      LOC_CALLBACKS.forEach((f) => f(location));
+      if (LOC_CALLBACK) {
+        LOC_CALLBACK(location);
+      }
     }
   }
 });
 
 // Component
-export default function App() {
+export default function Component() {
   const [text, setText] = useState("");
   const [gpsOn, setGpsOn] = useState(false);
   const [curPos, setCurPos] = useState<LocationObject | null>(null);
+  const [followMarker, setFollowMarker] = useState(false);
 
   // Request permissions right after starting the app
   useEffect(() => {
@@ -50,6 +55,27 @@ export default function App() {
     };
     requestPermissions();
   }, []);
+
+  // stateの状態(followMarker)で毎回挙動を変化させるため、
+  // コンポーネントのレンダリングのたびに関数を再生成
+  LOC_CALLBACK = (location) => {
+    setCurPos(location);
+    const d = new Date(location.timestamp);
+    setText(
+      `LAST DATE[${d}]\n` +
+        `Location in background:${JSON.stringify(location.coords)}` +
+        `\nFOLLOW:${followMarker}`
+    );
+
+    if (followMarker) {
+      MAPVIEW?.animateToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  };
 
   // Start location tracking in background
   const startBackgroundUpdate = async () => {
@@ -77,22 +103,6 @@ export default function App() {
     }
 
     setGpsOn(true);
-    LOC_CALLBACKS = [];
-    LOC_CALLBACKS.push((location) => {
-      setCurPos(location);
-      const d = new Date(location.timestamp);
-      setText(
-        `LAST DATE[${d}]\n` +
-          `Location in background:${JSON.stringify(location.coords)}`
-      );
-
-      MAPVIEW?.animateToRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    });
 
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       // For better logs, we set the accuracy to the most sensitive option
@@ -119,7 +129,6 @@ export default function App() {
   // Stop location tracking in background
   const stopBackgroundUpdate = async () => {
     setGpsOn(false);
-    LOC_CALLBACKS = [];
 
     const hasStarted = await Location.hasStartedLocationUpdatesAsync(
       LOCATION_TASK_NAME
@@ -149,6 +158,15 @@ export default function App() {
         >
           <Text style={styles.text}>Stop</Text>
         </TouchableOpacity>
+
+        <BouncyCheckbox
+          size={30}
+          fillColor="blue"
+          style={[styles.buttonBase]}
+          onPress={() => setFollowMarker(!followMarker)}
+          disableBuiltInState
+          isChecked={followMarker}
+        />
       </View>
 
       <MapView
@@ -188,19 +206,21 @@ const styles = StyleSheet.create({
   buttons: {
     flex: 1,
     flexDirection: "row",
-    gap: 10,
     margin: 5,
   },
   buttonBase: {
     flex: 1,
     borderRadius: 10,
+    margin: 5,
     alignItems: "center",
     justifyContent: "center",
   },
   start: {
+    flex: 3,
     backgroundColor: "green",
   },
   stop: {
+    flex: 3,
     backgroundColor: "red",
   },
 });
