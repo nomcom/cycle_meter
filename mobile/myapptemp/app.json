@@ -24,7 +24,12 @@
       },
       "permissions": [
         "ACCESS_BACKGROUND_LOCATION"
-      ]
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": // TODO: 要変更
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
