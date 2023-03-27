@@ -5,7 +5,6 @@ import MapCompo from "./src/common/MapCompo";
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>アプリ作成!</Text>
       <StatusBar style="auto" />
       <MapCompo></MapCompo>
     </View>
