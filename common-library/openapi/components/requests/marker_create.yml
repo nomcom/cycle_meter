@@ -1,4 +1,4 @@
-put:
+post:
   operationId: marker_create
   summary: Marker登録API
   description: Marker登録APIです
@@ -55,4 +55,16 @@ put:
 
   responses:
     "200":
-      $ref: "../responses/marker_single.yml"
+      description: Markerオブジェクト生成結果
+      content:
+        application/json:
+          schema:
+            type: object
+            description: 生成結果ユニークID
+            required:
+              - name
+            properties:
+              name:
+                description: ユニークID
+                type: string
+                example: xxxxxx

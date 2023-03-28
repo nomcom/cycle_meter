@@ -17,7 +17,7 @@ tags:
   description: Marker操作のAPIグループ
 
 paths:
-  /marker/create:
+  /marker/create.json:
     $ref: "./components/requests/marker_create.yml"
-  /marker/{id}:
+  /marker/select.json:
     $ref: "./components/requests/marker_by_id.yml"

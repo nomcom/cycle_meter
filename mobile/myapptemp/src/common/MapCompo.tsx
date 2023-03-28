@@ -15,6 +15,11 @@ import { LocationObject } from "expo-location";
 import { PROVIDER_GOOGLE } from "react-native-maps";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
+import * as Rest from "../rest/api";
+
+import Axios from "axios";
+Axios.defaults.baseURL = "https://cycle-54ee5-default-rtdb.firebaseio.com/";
+
 const LOCATION_TASK_NAME = "BACKGROUND_LOCATION_TASK";
 let LOC_CALLBACK_ASYNC: ((location: LocationObject) => Promise<void>) | null =
   null;
@@ -45,6 +50,7 @@ export default function Component() {
   const [gpsOn, setGpsOn] = useState(false);
   const [curPos, setCurPos] = useState<LocationObject | null>(null);
   const [followMarker, setFollowMarker] = useState(false);
+  const [saveMarker, setSaveMarker] = useState(true);
 
   // Request permissions right after starting the app
   useEffect(() => {
@@ -64,8 +70,28 @@ export default function Component() {
     setText(
       `LAST DATE[${d}]\n` +
         `Location in background:${JSON.stringify(location.coords)}` +
-        `\nFOLLOW:${followMarker}`
+        `\nFOLLOW:${followMarker}, SAVE:${saveMarker}`
     );
+    // REST通信
+    if (saveMarker) {
+      // 型の差異(null -> undefined)を吸収する
+      const coords = location.coords as any;
+      const nullToUndef: Rest.MarkerCreateBody = {
+        timestamp: location.timestamp,
+      };
+      Object.keys(coords).forEach((key) => {
+        (nullToUndef as any)[key] =
+          coords[key] == null ? undefined : coords[key];
+      });
+      try {
+        const resp = await Rest.markerCreate(nullToUndef);
+        console.info(
+          `ID:${resp.data.name} created by ${JSON.stringify(nullToUndef)}`
+        );
+      } catch (e) {
+        console.error("Rest Error", e);
+      }
+    }
 
     if (followMarker) {
       MAPVIEW?.animateToRegion({
@@ -159,14 +185,25 @@ export default function Component() {
           <Text style={styles.text}>Stop</Text>
         </TouchableOpacity>
 
-        <BouncyCheckbox
-          size={30}
-          fillColor="blue"
-          style={[styles.buttonBase]}
-          onPress={() => setFollowMarker(!followMarker)}
-          disableBuiltInState
-          isChecked={followMarker}
-        />
+        <View style={styles.checks}>
+          <BouncyCheckbox
+            size={20}
+            fillColor="green"
+            style={[styles.buttonBase]}
+            onPress={() => setSaveMarker(!saveMarker)}
+            disableBuiltInState
+            isChecked={saveMarker}
+          />
+
+          <BouncyCheckbox
+            size={20}
+            fillColor="blue"
+            style={[styles.buttonBase]}
+            onPress={() => setFollowMarker(!followMarker)}
+            disableBuiltInState
+            isChecked={followMarker}
+          />
+        </View>
       </View>
 
       <MapView
@@ -206,6 +243,10 @@ const styles = StyleSheet.create({
   buttons: {
     flex: 1,
     flexDirection: "row",
+    margin: 5,
+  },
+  checks: {
+    flex: 1,
     margin: 5,
   },
   buttonBase: {
