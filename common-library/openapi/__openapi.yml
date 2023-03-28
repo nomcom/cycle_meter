@@ -4,8 +4,8 @@ info:
   description: "BackEndのREST API仕様です"
   version: 1.0.0
 servers:
-  - url: http://localhost:{port}/
-    description: 開発環境
+  - url: https://cycle-54ee5-default-rtdb.firebaseio.com/
+    description: Firebase(Realtime Database)
     variables:
       port:
         enum:

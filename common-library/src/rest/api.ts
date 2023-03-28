@@ -27,13 +27,21 @@ export type MarkerById200 = {
   /** ID */
   id: number;
   /** 登録日付(Unixミリ秒) */
-  datetime: number;
+  timestamp?: number;
   /** 緯度(latitude) */
-  lat?: number;
+  latitude?: number;
   /** 経度(longitude) */
-  lng?: number;
+  longitude?: number;
   /** 高度(altitude) */
-  alt?: number;
+  altitude?: number;
+  /** メートル単位で測定された、場所の不確実性の半径 */
+  accuracy?: number;
+  /** 高度値の精度 (メートル単位) */
+  altitudeAccuracy?: number;
+  /** このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0 度、東は 90 度、南は 180 度などです */
+  heading?: number;
+  /** デバイスの瞬間速度 (メートル/秒) */
+  speed?: number;
   /** Commentオブジェクト */
   comment?: MarkerById200Comment;
   /** 画像ID */
@@ -57,13 +65,21 @@ export type MarkerCreate200 = {
   /** ID */
   id: number;
   /** 登録日付(Unixミリ秒) */
-  datetime: number;
+  timestamp?: number;
   /** 緯度(latitude) */
-  lat?: number;
+  latitude?: number;
   /** 経度(longitude) */
-  lng?: number;
+  longitude?: number;
   /** 高度(altitude) */
-  alt?: number;
+  altitude?: number;
+  /** メートル単位で測定された、場所の不確実性の半径 */
+  accuracy?: number;
+  /** 高度値の精度 (メートル単位) */
+  altitudeAccuracy?: number;
+  /** このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0 度、東は 90 度、南は 180 度などです */
+  heading?: number;
+  /** デバイスの瞬間速度 (メートル/秒) */
+  speed?: number;
   /** Commentオブジェクト */
   comment?: MarkerCreate200Comment;
   /** 画像ID */
@@ -82,13 +98,21 @@ export type MarkerCreateBodyComment = {
 
 export type MarkerCreateBody = {
   /** 登録日付(Unixミリ秒) */
-  datetime: number;
+  timestamp: number;
   /** 緯度(latitude) */
-  lat?: number;
+  latitude?: number;
   /** 経度(longitude) */
-  lng?: number;
+  longitude?: number;
   /** 高度(altitude) */
-  alt?: number;
+  altitude?: number;
+  /** メートル単位で測定された、場所の不確実性の半径 */
+  accuracy?: number;
+  /** 高度値の精度 (メートル単位) */
+  altitudeAccuracy?: number;
+  /** このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0 度、東は 90 度、南は 180 度などです */
+  heading?: number;
+  /** デバイスの瞬間速度 (メートル/秒) */
+  speed?: number;
   /** Commentオブジェクト */
   comment?: MarkerCreateBodyComment;
   /** 画像ID */
@@ -106,7 +130,7 @@ export type MarkerCreateBody = {
 export const markerCreate = <TData = AxiosResponse<MarkerCreate200>>(
     markerCreateBody: MarkerCreateBody, options?: AxiosRequestConfig
  ): Promise<TData> => {
-    return axios.post(
+    return axios.put(
       `/marker/create`,
       markerCreateBody,options
     );

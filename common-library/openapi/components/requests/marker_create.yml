@@ -1,4 +1,4 @@
-post:
+put:
   operationId: marker_create
   summary: Marker登録API
   description: Marker登録APIです
@@ -11,25 +11,41 @@ post:
         schema:
           type: object
           required:
-            - datetime
+            - timestamp
           properties:
-            datetime:
+            timestamp:
               description: 登録日付(Unixミリ秒)
               type: integer
               format: int64
               example: 1678150618427
-            lat:
+            latitude:
               description: 緯度(latitude)
               type: number
               example: 35.360652
-            lng:
+            longitude:
               description: 経度(longitude)
               type: number
               example: 138.727323
-            alt:
+            altitude:
               description: 高度(altitude)
               type: number
               example: 3772.123
+            accuracy:
+              description: メートル単位で測定された、場所の不確実性の半径
+              type: number
+              example: 10.0
+            altitudeAccuracy:
+              description: 高度値の精度 (メートル単位)
+              type: number
+              example: 10.0
+            heading:
+              description: このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0 度、東は 90 度、南は 180 度などです
+              type: number
+              example: 0.0
+            speed:
+              description: デバイスの瞬間速度 (メートル/秒)
+              type: number
+              example: 10.0
             comment:
                 $ref: "../schemas/comment.yml"
             imageId:
