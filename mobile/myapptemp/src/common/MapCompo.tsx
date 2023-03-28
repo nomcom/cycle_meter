@@ -16,8 +16,8 @@ import { PROVIDER_GOOGLE } from "react-native-maps";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const LOCATION_TASK_NAME = "BACKGROUND_LOCATION_TASK";
-
-let LOC_CALLBACK: ((location: LocationObject) => void) | null = null;
+let LOC_CALLBACK_ASYNC: ((location: LocationObject) => Promise<void>) | null =
+  null;
 let MAPVIEW: MapView | null = null;
 
 // Define the background task for location tracking
@@ -32,8 +32,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     const location = locations[0];
     if (location) {
       console.log("Location in background", location.coords);
-      if (LOC_CALLBACK) {
-        LOC_CALLBACK(location);
+      if (LOC_CALLBACK_ASYNC) {
+        LOC_CALLBACK_ASYNC(location);
       }
     }
   }
@@ -58,7 +58,7 @@ export default function Component() {
 
   // stateの状態(followMarker)で毎回挙動を変化させるため、
   // コンポーネントのレンダリングのたびに関数を再生成
-  LOC_CALLBACK = (location) => {
+  LOC_CALLBACK_ASYNC = async (location) => {
     setCurPos(location);
     const d = new Date(location.timestamp);
     setText(
