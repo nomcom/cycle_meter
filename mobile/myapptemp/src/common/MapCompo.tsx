@@ -17,9 +17,6 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import * as Rest from "../rest/api";
 
-import Axios from "axios";
-Axios.defaults.baseURL = "https://cycle-54ee5-default-rtdb.firebaseio.com/";
-
 const LOCATION_TASK_NAME = "BACKGROUND_LOCATION_TASK";
 let LOC_CALLBACK_ASYNC: ((location: LocationObject) => Promise<void>) | null =
   null;
@@ -38,7 +35,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     if (location) {
       console.log("Location in background", location.coords);
       if (LOC_CALLBACK_ASYNC) {
-        LOC_CALLBACK_ASYNC(location);
+        await LOC_CALLBACK_ASYNC(location);
       }
     }
   }
