@@ -5,6 +5,10 @@ function Compo() {
   return (
     <ul>
       <li>
+        <Link to={"/map"}>map</Link>
+      </li>
+
+      <li>
         (IMG:/vite.svg
         <img src="/vite.svg" className="logo" title="/vite.svg" />)
       </li>
