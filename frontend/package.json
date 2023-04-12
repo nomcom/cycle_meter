@@ -14,7 +14,6 @@
     "deploy": "cpx \"dist/**/*\" \"../backend/frontend\""
   },
   "dependencies": {
-    "@googlemaps/react-wrapper": "^1.1.35",
     "@react-google-maps/api": "^2.18.1",
     "common-library": "file:../common-library",
     "react": "^18.2.0",
