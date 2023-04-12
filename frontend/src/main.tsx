@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
+import "./index.css";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { Error404 } from "./components/elements/common/Error404";
 import routes from "~react-pages";
@@ -29,9 +30,19 @@ setApiServer("http://localhost:3000/");
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <nav className="w-full h-20 bg-red-200">
+      <a href={"/"}>
+        <div className="h-full flex bg-blue-200 max-w-5xl mx-auto p-1">
+          HEAD (IMG:/vite.svg
+          <img src="/vite.svg" className="logo" alt="/vite.svg" />)
+        </div>
+      </a>
+    </nav>
+    <div className="w-full h-[calc(100vh_-_5rem)] bg-green-200">
+      <Router>
+        <App />
+      </Router>
+    </div>
   </React.StrictMode>,
   document.getElementById("root")
 );
