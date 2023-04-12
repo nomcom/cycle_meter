@@ -8,13 +8,13 @@ function Compo() {
 
   const onSubmit = useCallback(async () => {
     const response = await api.markerCreate({
-      datetime: new Date().getTime(),
-      lat: 1.0,
-      lng: 2.0,
+      timestamp: new Date().getTime(),
+      latitude: 1.0,
+      longitude: 2.0,
     });
     // 成功時の処理
     const data = response.data;
-    setTitle(`${data.id}`);
+    setTitle(`${data.name}`);
   }, [api.markerCreate]);
 
   return (

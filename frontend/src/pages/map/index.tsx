@@ -15,6 +15,7 @@ const App: React.FC = () => {
     lng: 0,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onClick = (e: google.maps.MapMouseEvent) => {
     // avoid directly mutating state
   };

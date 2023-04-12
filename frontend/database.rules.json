@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": "now < 1682521200000",  // 2023-4-27
+    ".write": "now < 1682521200000",  // 2023-4-27
+    "marker" :{
+      ".indexOn": "timestamp",
+      "create" :{
+        ".indexOn": "timestamp"
+      }
+    }
+  }
+}
