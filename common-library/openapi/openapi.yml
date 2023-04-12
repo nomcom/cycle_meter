@@ -99,6 +99,109 @@ paths:
                     description: ユニークID
                     type: string
                     example: xxxxxx
+    get:
+      operationId: markers_get
+      summary: Marker取得API
+      description: Marker取得APIです
+      tags:
+        - marker
+      requestBody:
+        description: 取得内容
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderBy:
+                  description: 順序付け対象
+                  type: string
+                  example: timestamp
+                startAt:
+                  description: 開始(Unixミリ秒)
+                  type: integer
+                  example: 0
+                endAt:
+                  description: 終了(Unixミリ秒)
+                  type: integer
+                  format: int64
+                  example: 1678150618427
+                limitToFirst:
+                  description: 取得データ数
+                  type: integer
+                  format: int64
+                  example: 10
+      responses:
+        '200':
+          description: MarkerオブジェクトN応答
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Markerオブジェクト
+                additionalProperties:
+                  type: object
+                  description: Markerオブジェクト
+                  required:
+                    - id
+                    - datetime
+                  properties:
+                    id:
+                      description: ID
+                      type: integer
+                      format: int64
+                      example: 100
+                    timestamp:
+                      description: 登録日付(Unixミリ秒)
+                      type: integer
+                      format: int64
+                      example: 1678150618427
+                    latitude:
+                      description: 緯度(latitude)
+                      type: number
+                      example: 35.360652
+                    longitude:
+                      description: 経度(longitude)
+                      type: number
+                      example: 138.727323
+                    altitude:
+                      description: 高度(altitude)
+                      type: number
+                      example: 3772.123
+                    accuracy:
+                      description: メートル単位で測定された、場所の不確実性の半径
+                      type: number
+                      example: 10
+                    altitudeAccuracy:
+                      description: 高度値の精度 (メートル単位)
+                      type: number
+                      example: 10
+                    heading:
+                      description: >-
+                        このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0
+                        度、東は 90 度、南は 180 度などです
+                      type: number
+                      example: 0
+                    speed:
+                      description: デバイスの瞬間速度 (メートル/秒)
+                      type: number
+                      example: 10
+                    comment:
+                      type: object
+                      description: Commentオブジェクト
+                      properties:
+                        id:
+                          description: ID
+                          type: integer
+                          format: int64
+                          example: 100
+                        comment:
+                          description: コメント文字列
+                          type: string
+                          example: あいうえお abc 12345
+                    imageId:
+                      description: 画像ID
+                      type: integer
+                      example: 100101
   /marker/select.json:
     get:
       operationId: marker_by_id

@@ -16,14 +16,16 @@
 
 import * as React from "react";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { Polyline } from "@react-google-maps/api";
+import { api } from "common-library";
 
 const render = (status: Status) => {
   return <h1>{status}</h1>;
 };
 
-const App: React.VFC = () => {
-  const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([]);
-  const [zoom, setZoom] = React.useState(3); // initial zoom
+const App: React.FC = () => {
+  const [positions, setPositions] = React.useState<google.maps.LatLng[]>([]);
+  const [zoom, setZoom] = React.useState(12); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0,
@@ -31,14 +33,37 @@ const App: React.VFC = () => {
 
   const onClick = (e: google.maps.MapMouseEvent) => {
     // avoid directly mutating state
-    setClicks([...clicks, e.latLng!]);
   };
 
   const onIdle = (m: google.maps.Map) => {
     console.log("onIdle");
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     setZoom(m.getZoom()!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     setCenter(m.getCenter()!.toJSON());
   };
+
+  const onSubmit = React.useCallback(async () => {
+    const response = await api.markersGet({
+      orderBy: "timestamp",
+      startAt: 0,
+      limitToFirst: 100,
+    });
+    // 成功時の処理
+    const newPos = Object.keys(response.data).map(
+      (key) =>
+        new google.maps.LatLng(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          response.data[key].latitude!,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          response.data[key].longitude!
+        )
+    );
+    if (newPos && newPos.length > 0) {
+      setPositions(positions.concat(newPos));
+      setCenter(newPos[newPos.length - 1].toJSON());
+    }
+  }, [api.markerCreate]);
 
   const form = (
     <div
@@ -59,31 +84,14 @@ const App: React.VFC = () => {
       />
       <br />
       <label htmlFor="lat">Latitude</label>
-      <input
-        type="number"
-        id="lat"
-        name="lat"
-        value={center.lat}
-        onChange={(event) =>
-          setCenter({ ...center, lat: Number(event.target.value) })
-        }
-      />
+      <input type="number" id="lat" name="lat" value={center.lat} disabled />
       <br />
       <label htmlFor="lng">Longitude</label>
-      <input
-        type="number"
-        id="lng"
-        name="lng"
-        value={center.lng}
-        onChange={(event) =>
-          setCenter({ ...center, lng: Number(event.target.value) })
-        }
-      />
-      <h3>{clicks.length === 0 ? "Click on map to add markers" : "Clicks"}</h3>
-      {clicks.map((latLng, i) => (
-        <pre key={i}>{JSON.stringify(latLng.toJSON(), null, 2)}</pre>
-      ))}
-      <button onClick={() => setClicks([])}>Clear</button>
+      <input type="number" id="lng" name="lng" value={center.lng} disabled />
+
+      <button title="Submit" onClick={onSubmit}>
+        データ取得
+      </button>
     </div>
   );
 
@@ -97,9 +105,24 @@ const App: React.VFC = () => {
           zoom={zoom}
           style={{ flexGrow: "1", height: "100%" }}
         >
-          {clicks.map((latLng, i) => (
+          {positions.map((latLng, i) => (
             <Marker key={i} position={latLng} />
           ))}
+          <Polyline
+            path={positions}
+            options={{
+              strokeColor: "#ff2527",
+              strokeOpacity: 0.75,
+              strokeWeight: 2,
+              // icons: [
+              //   {
+              //     icon: lineSymbol,
+              //     offset: "0",
+              //     repeat: "20px",
+              //   },
+              // ],
+            }}
+          />
         </Map>
       </Wrapper>
       {/* Basic form for controlling center and zoom of map. */}

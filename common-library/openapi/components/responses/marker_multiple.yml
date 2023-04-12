@@ -1,0 +1,9 @@
+description: MarkerオブジェクトN応答
+content:
+  application/json:
+    schema:
+      type: object
+      description: Markerオブジェクト
+      additionalProperties:
+          $ref: "../schemas/marker.yml"
+      

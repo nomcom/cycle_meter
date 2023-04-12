@@ -10,6 +10,7 @@
     "build": "npm run clean && tsc",
     "lint": "eslint src --ext ts,tsx",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "rest": "npm run rest:prepare && npm run rest:client && npm run rest:doc",
     "rest:prepare": "swagger-merger -i openapi/__openapi.yml -o openapi/openapi.yml",
     "rest:client": "orval",
     "rest:doc": "redocly build-docs openapi/openapi.yml --output ../doc/api/API仕様書.html",

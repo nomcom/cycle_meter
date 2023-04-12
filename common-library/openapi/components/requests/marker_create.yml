@@ -68,3 +68,39 @@ post:
                 description: ユニークID
                 type: string
                 example: xxxxxx
+
+get:
+  operationId: markers_get
+  summary: Marker取得API
+  description: Marker取得APIです
+  tags:
+    - marker
+  requestBody:
+    description: "取得内容"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            orderBy:
+              description: 順序付け対象
+              type: string
+              example: timestamp
+            startAt:
+              description: 開始(Unixミリ秒)
+              type: integer
+              example: 0
+            endAt:
+              description: 終了(Unixミリ秒)
+              type: integer
+              format: int64
+              example: 1678150618427
+            limitToFirst:
+              description: 取得データ数
+              type: integer
+              format: int64
+              example: 10
+
+  responses:
+    "200":
+      $ref: "../responses/marker_multiple.yml"

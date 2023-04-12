@@ -26,7 +26,7 @@ const App = () => {
   );
 };
 
-setApiServer("http://localhost:3000/");
+setApiServer(import.meta.env.VITE_REST_URL_BASE);
 
 ReactDOM.render(
   <React.StrictMode>

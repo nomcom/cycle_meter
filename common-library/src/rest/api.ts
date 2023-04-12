@@ -49,6 +49,55 @@ export type MarkerById200 = {
 };
 
 /**
+ * Commentオブジェクト
+ */
+export type MarkersGet200Comment = {
+  /** ID */
+  id?: number;
+  /** コメント文字列 */
+  comment?: string;
+};
+
+/**
+ * Markerオブジェクト
+ */
+export type MarkersGet200 = {[key: string]: {
+  /** ID */
+  id: number;
+  /** 登録日付(Unixミリ秒) */
+  timestamp?: number;
+  /** 緯度(latitude) */
+  latitude?: number;
+  /** 経度(longitude) */
+  longitude?: number;
+  /** 高度(altitude) */
+  altitude?: number;
+  /** メートル単位で測定された、場所の不確実性の半径 */
+  accuracy?: number;
+  /** 高度値の精度 (メートル単位) */
+  altitudeAccuracy?: number;
+  /** このデバイスの水平方向の移動方向。真北からコンパスを中心に時計回りに度数で測定されます。したがって、北は 0 度、東は 90 度、南は 180 度などです */
+  heading?: number;
+  /** デバイスの瞬間速度 (メートル/秒) */
+  speed?: number;
+  /** Commentオブジェクト */
+  comment?: MarkersGet200Comment;
+  /** 画像ID */
+  imageId?: number;
+}};
+
+export type MarkersGetBody = {
+  /** 順序付け対象 */
+  orderBy?: string;
+  /** 開始(Unixミリ秒) */
+  startAt?: number;
+  /** 終了(Unixミリ秒) */
+  endAt?: number;
+  /** 取得データ数 */
+  limitToFirst?: number;
+};
+
+/**
  * 生成結果ユニークID
  */
 export type MarkerCreate200 = {
@@ -107,6 +156,18 @@ export const markerCreate = <TData = AxiosResponse<MarkerCreate200>>(
   }
 
 /**
+ * Marker取得APIです
+ * @summary Marker取得API
+ */
+export const markersGet = <TData = AxiosResponse<MarkersGet200>>(
+    markersGetBody: MarkersGetBody, options?: AxiosRequestConfig
+ ): Promise<TData> => {
+    return axios.get(
+      `/marker/create.json`,options
+    );
+  }
+
+/**
  * Marker取得API(ID指定)です
  * @summary Marker取得API(ID指定)
  */
@@ -119,4 +180,5 @@ export const markerById = <TData = AxiosResponse<MarkerById200>>(
   }
 
 export type MarkerCreateResult = AxiosResponse<MarkerCreate200>
+export type MarkersGetResult = AxiosResponse<MarkersGet200>
 export type MarkerByIdResult = AxiosResponse<MarkerById200>
