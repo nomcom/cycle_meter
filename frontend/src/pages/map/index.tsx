@@ -93,15 +93,17 @@ const App: React.FC = () => {
     </>
   );
 
-  const form = (
-    <div
-      style={{
-        padding: "1rem",
-        flexBasis: "250px",
-        height: "100%",
-        overflow: "auto",
-      }}
+  const but = (
+    <label
+      htmlFor="my-drawer"
+      className="fixed top-2 right-2 btn btn-primary drawer-button"
     >
+      Open drawer
+    </label>
+  );
+
+  const form = (
+    <div className="menu p-4 w-80 bg-gray-300 text-base-content">
       <label htmlFor="zoom">Zoom</label>
       <input
         type="number"
@@ -124,19 +126,23 @@ const App: React.FC = () => {
   );
 
   return (
-    <div style={{ display: "flex", height: "100%" }}>
-      <GoogleMap
-        center={center}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-        onClick={onClick}
-        onZoomChanged={onZoomChanged}
-        zoom={zoom}
-        mapContainerStyle={{ flexGrow: "1", height: "100%" }}
-      >
-        {mapElements}
-      </GoogleMap>
-      {form}
+    <div className="drawer" style={{ height: "100%" }}>
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+      <div className="drawer-content">
+        <GoogleMap
+          center={center}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+          onClick={onClick}
+          onZoomChanged={onZoomChanged}
+          zoom={zoom}
+          mapContainerStyle={{ flexGrow: "1", height: "100%" }}
+        >
+          {mapElements}
+        </GoogleMap>
+      </div>
+      {but}
+      <div className="drawer-side">{form}</div>
     </div>
   );
 };
