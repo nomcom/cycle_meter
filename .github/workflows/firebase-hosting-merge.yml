@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: 
+      - run: |
           touch frontend/.env
           echo VITE_REST_URL_BASE=${{ secrets.VITE_REST_URL_BASE }} >> .env
           echo VITE_GOOGLE_MAP_API_KEY=${{ secrets.VITE_GOOGLE_MAP_API_KEY }} >> .env
