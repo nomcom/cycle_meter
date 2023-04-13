@@ -7,7 +7,7 @@
   "scripts": {
     "init": "run-s rest:prepare rest:client rest:doc",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && npm run rest && tsc",
     "lint": "eslint src --ext ts,tsx",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "rest": "npm run rest:prepare && npm run rest:client && npm run rest:doc",
