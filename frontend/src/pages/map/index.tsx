@@ -49,7 +49,8 @@ const App: React.FC = () => {
     const dateTo = document.getElementById("dateTo") as HTMLInputElement;
     const fileName = `${dateFrom.value}_${dateTo.value}.kml`;
 
-    const org = markers.map((m) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const org: any = markers.map((m) => {
       return {
         ...m,
         timestamp: new Date(m.timestamp).toISOString(),
