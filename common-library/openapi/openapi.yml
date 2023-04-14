@@ -105,31 +105,29 @@ paths:
       description: Marker取得APIです
       tags:
         - marker
-      requestBody:
-        description: 取得内容
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                orderBy:
-                  description: 順序付け対象
-                  type: string
-                  example: timestamp
-                startAt:
-                  description: 開始(Unixミリ秒)
-                  type: integer
-                  example: 0
-                endAt:
-                  description: 終了(Unixミリ秒)
-                  type: integer
-                  format: int64
-                  example: 1678150618427
-                limitToFirst:
-                  description: 取得データ数
-                  type: integer
-                  format: int64
-                  example: 10
+      parameters:
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+          description: 順序付け対象
+        - in: query
+          name: startAt
+          schema:
+            type: integer
+            format: int64
+          description: 開始(Unixミリ秒)
+        - in: query
+          name: endAt
+          schema:
+            type: integer
+            format: int64
+          description: 終了(Unixミリ秒)
+        - in: query
+          name: limitToFirst
+          schema:
+            type: integer
+          description: 取得データ数
       responses:
         '200':
           description: MarkerオブジェクトN応答

@@ -86,15 +86,23 @@ export type MarkersGet200 = {[key: string]: {
   imageId?: number;
 }};
 
-export type MarkersGetBody = {
-  /** 順序付け対象 */
-  orderBy?: string;
-  /** 開始(Unixミリ秒) */
-  startAt?: number;
-  /** 終了(Unixミリ秒) */
-  endAt?: number;
-  /** 取得データ数 */
-  limitToFirst?: number;
+export type MarkersGetParams = {
+/**
+ * 順序付け対象
+ */
+orderBy?: string;
+/**
+ * 開始(Unixミリ秒)
+ */
+startAt?: number;
+/**
+ * 終了(Unixミリ秒)
+ */
+endAt?: number;
+/**
+ * 取得データ数
+ */
+limitToFirst?: number;
 };
 
 /**
@@ -160,10 +168,12 @@ export const markerCreate = <TData = AxiosResponse<MarkerCreate200>>(
  * @summary Marker取得API
  */
 export const markersGet = <TData = AxiosResponse<MarkersGet200>>(
-    markersGetBody: MarkersGetBody, options?: AxiosRequestConfig
+    params?: MarkersGetParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/marker/create.json`,options
+      `/marker/create.json`,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
