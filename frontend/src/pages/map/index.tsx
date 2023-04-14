@@ -54,6 +54,7 @@ const App: React.FC = () => {
       return {
         ...m,
         timestamp: new Date(m.timestamp).toISOString(),
+        comment: m.comment?.comment,
       };
     });
     org.push({
