@@ -8,18 +8,39 @@ export const TIMEZONE_OFFSET_MILLISEC = new Date().getTimezoneOffset() * 60000;
  * Unixミリ秒をyyyy-MM-mm形式文字列(ローカル時間(タイムゾーン込み))に変換する
  * 変換不能の場合は空文字を返す
  * @param val 対象
+ * @param withTime 時間も付与する
  * @returns 結果
  */
 export const toDateString = (val: number | null): string => {
   if (!val) {
     return "";
   }
+  return toDateStringFormat(val, "yyyy-MM-dd");
+};
+
+/**
+ * Unixミリ秒をyyyy-MM-mm形式文字列(ローカル時間(タイムゾーン込み))に変換する
+ * 変換不能の場合は空文字を返す
+ * @param val 対象
+ * @param withTime 時間も付与する
+ * @returns 結果
+ */
+export const toDateStringFormat = (val: number, format: string): string => {
   const date = new Date(val);
   // getxxxで取得する値はローカル時間(タイムゾーン込み)
-  const yyyy = date.getFullYear();
+  const yyyy = String(date.getFullYear());
   const MM = String(date.getMonth() + 1).padStart(2, "0");
   const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}-${MM}-${dd}`;
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  const ss = String(date.getSeconds()).padStart(2, "0");
+  return format
+    .replace(/yyyy/, yyyy)
+    .replace(/MM/, MM)
+    .replace(/dd/, dd)
+    .replace(/hh/, hh)
+    .replace(/mm/, mm)
+    .replace(/ss/, ss);
 };
 
 /**

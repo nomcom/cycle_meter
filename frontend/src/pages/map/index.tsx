@@ -7,6 +7,12 @@ import {
 } from "@react-google-maps/api";
 import { api, util } from "common-library";
 import { MarkerCreateBody } from "common-library/dist/rest/api";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import tokml from "@maphubs/tokml";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import geojson from "geojson";
 
 const App: React.FC = () => {
   const { isLoaded } = useLoadScript({
@@ -39,8 +45,35 @@ const App: React.FC = () => {
   );
 
   const onKml = React.useCallback(async () => {
-    //
-  }, []);
+    const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
+    const dateTo = document.getElementById("dateTo") as HTMLInputElement;
+    const fileName = `${dateFrom.value}_${dateTo.value}.kml`;
+
+    const org = markers.map((m) => {
+      return {
+        ...m,
+        timestamp: new Date(m.timestamp).toISOString(),
+      };
+    });
+    org.push({
+      line: markers.map((m) => [m.longitude, m.latitude]),
+    });
+    const geojsonObject = geojson.parse(
+      org,
+      {
+        Point: ["latitude", "longitude"],
+        LineString: "line",
+      },
+      {
+        documentName: fileName,
+        documentDescription: "KML Export",
+      }
+    );
+
+    const response = tokml(geojsonObject);
+
+    util.htmlUtil.downloadText(response, fileName);
+  }, [markers]);
 
   const onSubmit = React.useCallback(async () => {
     const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
@@ -77,7 +110,6 @@ const App: React.FC = () => {
       setMapLatLngs(newLatLngs);
       const allMarkers = newMarkers;
       setMarkers(allMarkers);
-      map
 
       setCenter(newLatLngs[newLatLngs.length - 1].toJSON());
 
@@ -87,7 +119,7 @@ const App: React.FC = () => {
         allMarkers[allMarkers.length - 1].timestamp
       );
     }
-  }, [mapLatLngs]);
+  }, []);
 
   if (!isLoaded) {
     return <></>;
