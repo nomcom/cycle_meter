@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -59,60 +59,64 @@ export default function Component() {
     requestPermissions();
   }, []);
 
-  // stateの状態(followMarker)で毎回挙動を変化させるため、
-  // コンポーネントのレンダリングのたびに関数を再生成
-  LOC_CALLBACK_ASYNC = async (location) => {
-    setCurPos(location);
-    const d = new Date(location.timestamp);
-    setText(
-      `LAST DATE[${d}]\n` +
-        `Location in background:${JSON.stringify(location.coords)}` +
-        `\nFOLLOW:${followMarker}, SAVE:${saveMarker}`
-    );
-    // REST通信
-    if (saveMarker) {
-      // 型の差異(null -> undefined)を吸収する
-      const coords = location.coords as any;
-      const nullToUndef: Rest.MarkerCreateBody = {
-        timestamp: location.timestamp,
-      };
-      Object.keys(coords).forEach((key) => {
-        (nullToUndef as any)[key] =
-          coords[key] == null ? undefined : coords[key];
-      });
-      try {
-        const resp = await Rest.markerCreate(nullToUndef);
-        console.info(
-          `ID:${resp.data.name} created by ${JSON.stringify(nullToUndef)}`
-        );
-      } catch (e) {
-        console.error("Rest Error", e);
-      }
-    }
+  LOC_CALLBACK_ASYNC = React.useCallback(
+    async (location: LocationObject) => {
+      setCurPos(location);
+      setText(
+        text +
+          `[${new Date().toISOString()}]LOCATION(${location.coords.latitude}, ${
+            location.coords.longitude
+          })<br>`
+      );
 
-    if (followMarker) {
-      MAPVIEW?.animateToRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  };
+      // REST通信
+      if (saveMarker) {
+        // 型の差異(null -> undefined)を吸収する
+        const coords = location.coords as any;
+        const nullToUndef: Rest.MarkerCreateBody = {
+          timestamp: location.timestamp,
+        };
+        Object.keys(coords).forEach((key) => {
+          (nullToUndef as any)[key] =
+            coords[key] == null ? undefined : coords[key];
+        });
+        try {
+          const resp = await Rest.markerCreate(nullToUndef);
+          console.info(
+            `ID:${resp.data.name} created by ${JSON.stringify(nullToUndef)}`
+          );
+        } catch (e) {
+          console.error("Rest Error", e);
+        }
+      }
+
+      if (followMarker) {
+        MAPVIEW?.animateToRegion({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      }
+    },
+    [followMarker, text]
+  );
 
   // Start location tracking in background
   const startBackgroundUpdate = async () => {
     // Don't track position if permission is not granted
     const { granted } = await Location.getBackgroundPermissionsAsync();
     if (!granted) {
-      console.log("location tracking denied");
+      setText(
+        text + `[${new Date().toISOString()}]location tracking denied<br>`
+      );
       return;
     }
 
     // Make sure the task is defined otherwise do not start tracking
     const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
     if (!isTaskDefined) {
-      console.log("Task is not defined");
+      setText(text + `[${new Date().toISOString()}]Task is not defined<br>`);
       return;
     }
 
@@ -121,7 +125,9 @@ export default function Component() {
       LOCATION_TASK_NAME
     );
     if (hasStarted) {
-      console.log("Already started, going to stop");
+      setText(
+        text + `[${new Date().toISOString()}]Already started, going to stop<br>`
+      );
       await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
     }
 
@@ -133,8 +139,8 @@ export default function Component() {
       // Make sure to enable this notification if you want to consistently track in the background
       showsBackgroundLocationIndicator: true,
       foregroundService: {
-        notificationTitle: "Location",
-        notificationBody: "Location tracking in background",
+        notificationTitle: "GPS_Logger",
+        notificationBody: "バックグラウンドでGPS取得中",
         notificationColor: "#fff",
         // Boolean value whether to destroy the foreground service if the app is killed.
         // killServiceOnDestroy: true,
@@ -142,10 +148,10 @@ export default function Component() {
       // The distance in meters that must occur
       // between last reported location and the current location
       // before deferred locations are reported.
-      // deferredUpdatesDistance: 100,
+      deferredUpdatesDistance: 100,
       // Minimum time interval in milliseconds
       // that must pass since last reported location before all later locations are reported in a batched update
-      deferredUpdatesInterval: 5000,
+      // deferredUpdatesInterval: 5000,
     });
   };
 
@@ -158,7 +164,9 @@ export default function Component() {
     );
     if (hasStarted) {
       await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
-      console.log("Location tracking stopped");
+      setText(
+        text + `[${new Date().toISOString()}]Location tracking stopped<br>`
+      );
     }
   };
 
@@ -203,7 +211,7 @@ export default function Component() {
         </View>
       </View>
 
-      <MapView
+      {/* <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         ref={(map) => {
@@ -211,7 +219,7 @@ export default function Component() {
         }}
       >
         {marker}
-      </MapView>
+      </MapView> */}
     </View>
   );
 }

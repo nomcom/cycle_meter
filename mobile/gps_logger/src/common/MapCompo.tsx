@@ -20,6 +20,10 @@ import * as Rest from "../rest/api";
 export default function Component() {
   const [text, setText] = useState("テスト");
   const [gpsOn, setGpsOn] = useState(false);
+
+  const marker = (
+    <Marker coordinate={{ latitude: 35.645736, longitude: 139.747575 }} />
+  );
   return (
     <View style={styles.container}>
       <Text>{text}</Text>
@@ -58,6 +62,16 @@ export default function Component() {
           />
         </View>
       </View>
+
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={styles.map}
+        // ref={(map) => {
+        //   MAPVIEW = map;
+        // }}
+      >
+        {marker}
+      </MapView>
     </View>
   );
 }
