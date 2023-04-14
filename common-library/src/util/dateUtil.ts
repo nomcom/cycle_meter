@@ -26,9 +26,13 @@ export const toDateString = (val: number | null): string => {
  * yyyy-MM-mm形式文字列(ローカル時間(タイムゾーン込み))をUnixミリ秒に変換する
  * 変換不能の場合はnullを返す
  * @param time 対象
+ * @param isEnd その日の最後のミリ秒(23:59:59.99..)を返すか？
  * @returns 結果
  */
-export const toUnixMilliSec = (val: string | null): number | null => {
+export const toUnixMilliSec = (
+  val: string | null,
+  isEnd: boolean | undefined = false
+): number | null => {
   if (!val) {
     return null;
   }
@@ -39,6 +43,6 @@ export const toUnixMilliSec = (val: string | null): number | null => {
   const date = new Date(0);
   date.setFullYear(parseInt(match[1], 10));
   date.setMonth(parseInt(match[2], 10) - 1);
-  date.setDate(parseInt(match[3], 10));
-  return date.getTime() + TIMEZONE_OFFSET_MILLISEC;
+  date.setDate(parseInt(match[3], 10) + (isEnd ? 1 : 0));
+  return date.getTime() + TIMEZONE_OFFSET_MILLISEC - (isEnd ? 1 : 0);
 };
