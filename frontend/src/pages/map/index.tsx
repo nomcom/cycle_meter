@@ -5,7 +5,8 @@ import {
   GoogleMap,
   useLoadScript,
 } from "@react-google-maps/api";
-import { api } from "common-library";
+import { api, util } from "common-library";
+import { MarkerCreateBody } from "common-library/dist/rest/api";
 
 const App: React.FC = () => {
   const { isLoaded } = useLoadScript({
@@ -13,7 +14,8 @@ const App: React.FC = () => {
     // ...otherOptions
   });
   const [map, setMap] = React.useState<any>(null);
-  const [positions, setPositions] = React.useState<google.maps.LatLng[]>([]);
+  const [mapLatLngs, setMapLatLngs] = React.useState<google.maps.LatLng[]>([]);
+  const [markers, setMarkers] = React.useState<MarkerCreateBody[]>([]);
   const [zoom, setZoom] = React.useState(12); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -36,27 +38,56 @@ const App: React.FC = () => {
     [map]
   );
 
+  const onKml = React.useCallback(async () => {
+    //
+  }, []);
+
   const onSubmit = React.useCallback(async () => {
+    const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
+    const dateTo = document.getElementById("dateTo") as HTMLInputElement;
+
+    const startDate = util.dateUtil.toUnixMilliSec(dateFrom.value);
+    const endDate = util.dateUtil.toUnixMilliSec(dateTo.value, true);
     const response = await api.markersGet({
-      orderBy: "timestamp",
-      startAt: 0,
+      orderBy: '"timestamp"',
+      startAt: startDate ? startDate : undefined,
+      endAt: endDate ? endDate : undefined,
       limitToFirst: 100,
     });
-    // 成功時の処理
-    const newPos = Object.keys(response.data).map(
-      (key) =>
-        new google.maps.LatLng(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          response.data[key].latitude!,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          response.data[key].longitude!
-        )
-    );
-    if (newPos && newPos.length > 0) {
-      setPositions(positions.concat(newPos));
-      setCenter(newPos[newPos.length - 1].toJSON());
+
+    if (response.data && Object.values(response.data).length > 0) {
+      const newMarkers = Object.values(response.data).sort(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (r1, r2) => r1.timestamp! - r2.timestamp!
+      ) as MarkerCreateBody[];
+
+      // 成功時の処理
+      const newLatLngs = newMarkers.map(
+        (val) =>
+          new google.maps.LatLng(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            val.latitude!,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            val.longitude!
+          )
+      );
+
+      // setMapLatLngs(mapLatLngs.concat(newLatLngs));
+      // const allMarkers = markers.concat(newMarkers);
+      setMapLatLngs(newLatLngs);
+      const allMarkers = newMarkers;
+      setMarkers(allMarkers);
+      map
+
+      setCenter(newLatLngs[newLatLngs.length - 1].toJSON());
+
+      // 日付設定
+      dateFrom.value = util.dateUtil.toDateString(allMarkers[0].timestamp);
+      dateTo.value = util.dateUtil.toDateString(
+        allMarkers[allMarkers.length - 1].timestamp
+      );
     }
-  }, [positions]);
+  }, [mapLatLngs]);
 
   if (!isLoaded) {
     return <></>;
@@ -70,24 +101,15 @@ const App: React.FC = () => {
   // ロード済みの場合のみ
   mapElements = (
     <>
-      {positions.map((latLng, i) => (
-        <Marker key={i} position={latLng} />
+      {mapLatLngs.map((latLng, i) => (
+        <Marker key={i} position={latLng as google.maps.LatLng} />
       ))}
       <Polyline
-        path={positions}
+        path={mapLatLngs as google.maps.LatLng[]}
         options={{
           strokeColor: "#ff2527",
           strokeOpacity: 0.75,
           strokeWeight: 5,
-          // icons: [
-          //   {
-          //     icon: {
-          //       path: google.maps.SymbolPath.CIRCLE,
-          //     },
-          //     offset: "0",
-          //     repeat: "20px",
-          //   },
-          // ],
         }}
       />
     </>
@@ -98,31 +120,68 @@ const App: React.FC = () => {
       htmlFor="my-drawer"
       className="fixed top-2 right-2 btn btn-primary drawer-button"
     >
-      Open drawer
+      Menu
     </label>
   );
 
   const form = (
-    <div className="menu p-4 w-80 bg-gray-300 text-base-content">
-      <label htmlFor="zoom">Zoom</label>
-      <input
-        type="number"
-        id="zoom"
-        name="zoom"
-        value={zoom}
-        onChange={(event) => setZoom(Number(event.target.value))}
-      />
-      <br />
-      <label htmlFor="lat">Latitude</label>
-      <input type="number" id="lat" name="lat" value={center.lat} disabled />
-      <br />
-      <label htmlFor="lng">Longitude</label>
-      <input type="number" id="lng" name="lng" value={center.lng} disabled />
-
-      <button title="Submit" onClick={onSubmit} disabled={!isLoaded}>
-        データ取得
-      </button>
-    </div>
+    <>
+      <label htmlFor="my-drawer" className="drawer-overlay"></label>
+      <ul className="menu bg-gray-300 text-base-content">
+        <li>
+          <label className="label">
+            Zoom
+            <input
+              type="number"
+              className="input w-full max-w-xs"
+              value={zoom}
+              onChange={(event) => setZoom(Number(event.target.value))}
+            />
+          </label>
+        </li>
+        <li>
+          <label className="label">
+            Latitude
+            <input
+              type="number"
+              value={center.lat}
+              className="input"
+              disabled
+            />
+          </label>
+        </li>
+        <li>
+          <label className="label">
+            Longitude
+            <input
+              type="number"
+              value={center.lng}
+              className="input"
+              disabled
+            />
+          </label>
+        </li>
+        <li>
+          <div>
+            <label className="label">
+              From:
+              <input className="input" type="date" id="dateFrom" />
+            </label>
+            ～
+            <label className="label">
+              To:
+              <input className="input" type="date" id="dateTo" />
+            </label>
+          </div>
+        </li>
+        <li className={isLoaded ? "" : "disabled"}>
+          <a onClick={onSubmit}>データ取得</a>
+        </li>
+        <li className={isLoaded && mapLatLngs.length > 0 ? "" : "disabled"}>
+          <a onClick={onKml}>KMLダウンロード</a>
+        </li>
+      </ul>
+    </>
   );
 
   return (
@@ -142,7 +201,7 @@ const App: React.FC = () => {
         </GoogleMap>
       </div>
       {but}
-      <div className="drawer-side">{form}</div>
+      <div className="drawer-side w-1/2">{form}</div>
     </div>
   );
 };
