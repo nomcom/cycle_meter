@@ -7,13 +7,11 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
-// import MapView, { Marker } from "react-native-maps";
-import { WebView } from 'react-native-webview';
+import MapView, { Marker,PROVIDER_GOOGLE } from "react-native-maps";
+// import { WebView } from 'react-native-webview';
 
 import * as Location from "expo-location";
 // import * as TaskManager from "expo-task-manager";
-import { LocationObject } from "expo-location";
-// import { PROVIDER_GOOGLE } from "react-native-maps";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import * as Rest from "../rest/api";
@@ -27,7 +25,7 @@ export default function Component() {
   const [timeText, setTimeText] = useState("テスト");
   const [logText, setLogText] = useState(axios.defaults.baseURL);
   const [comment, setComment] = useState("");
-  const [loc, setLoc] = useState<LocationObject | null>(null);
+  const [loc, setLoc] = useState<Location.LocationObject | null>(null);
 
   // Request permissions right after starting the app
   useEffect(() => {
@@ -104,9 +102,9 @@ export default function Component() {
   );
 
 
-  // const marker = loc ? (
-  //   <Marker coordinate={loc?.coords!} />
-  // ) : <></>;
+  const marker = loc ? (
+    <Marker coordinate={loc?.coords!} />
+  ) : <></>;
 
   return (
     <View style={styles.container}>
@@ -121,6 +119,12 @@ export default function Component() {
           style={[styles.buttonBase, styles.sendInfo]}
           onPress={sendInfo}>
           <Text style={styles.text}>SEND</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.buttonBase, styles.getPict]}
+          onPress={sendInfo}>
+          <Text style={styles.text}>PICT</Text>
         </TouchableOpacity>
       </View>
 
@@ -139,16 +143,17 @@ export default function Component() {
         />
       </View>
 
-      <View style={styles.map}>
-        {/* <MapView
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
           provider={PROVIDER_GOOGLE}
         >
           {marker}
-        </MapView>   */}
-        <WebView
+        </MapView>  
+        {/* <WebView
           style={styles.infos}
           source={{ uri: linkStr }}
-        />
+        /> */}
       </View>
     </View>
   );
@@ -180,10 +185,14 @@ const styles = StyleSheet.create({
     flex: 3,
     margin: 3,
   },
-  map: {
+  mapContainer: {
     backgroundColor: "gray",
     flex: 7,
     margin: -5
+  },
+  map: {
+    width: '100%',
+    height: '100%',
   },
   buttonBase: {
     flex: 1,
@@ -199,6 +208,10 @@ const styles = StyleSheet.create({
   sendInfo: {
     flex: 3,
     backgroundColor: "blue",
+  },
+  getPict: {
+    flex: 3,
+    backgroundColor: "red",
   },
   text: {
     color: "white",
