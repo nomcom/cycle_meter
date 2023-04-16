@@ -52,6 +52,11 @@ npx eas build:configure
 npx eas build -p android --profile preview --local
 ```
 
+- Add Secret Environment by ".env" file
+```
+npx eas secret:push --scope project --env-file ./.env
+```
+
 npm install -g sharp-cli
 
 ## Firebase

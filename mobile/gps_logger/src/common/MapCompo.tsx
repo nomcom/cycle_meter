@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 // import MapView, { Marker } from "react-native-maps";
+import { WebView } from 'react-native-webview';
 
 import * as Location from "expo-location";
 // import * as TaskManager from "expo-task-manager";
@@ -18,14 +19,15 @@ import { LocationObject } from "expo-location";
 import * as Rest from "../rest/api";
 import { A } from '@expo/html-elements';
 
+import axios, { AxiosError,  AxiosResponse, InternalAxiosRequestConfig } from "axios";
+
 // let MAPVIEW: MapView | null = null;
 
 export default function Component() {
   const [timeText, setTimeText] = useState("テスト");
-  const [comment, setComment] = useState("テスト");
+  const [logText, setLogText] = useState(axios.defaults.baseURL);
+  const [comment, setComment] = useState("");
   const [loc, setLoc] = useState<LocationObject | null>(null);
-
-  const [gpsOn, setGpsOn] = useState(false);
 
   // Request permissions right after starting the app
   useEffect(() => {
@@ -35,6 +37,23 @@ export default function Component() {
         await Location.requestBackgroundPermissionsAsync();
     };
     requestPermissions();
+
+    axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+        const url = `${config.baseURL}${config.url}`;
+        setLogText(`REQ:Method=${config.method} Url=${url} Body=${JSON.stringify(config.data)}`);
+        return config;
+    });
+    axios.interceptors.response.use(
+        (response: AxiosResponse) => {
+          const status = response.status;
+          setLogText(`RES:Method=Success: Status=${status}`);
+          return response;
+        },
+        (error: AxiosError) => {
+          const status = error.response!.status;
+          setLogText(`RES:Error: Status=${status}`);
+        }
+    );
   }, []);
 
   const getInfo = React.useCallback(
@@ -48,7 +67,11 @@ export default function Component() {
 
   const linkStr = `https://www.google.com/maps/search/?api=1&query=${loc?.coords.latitude}%2C${loc?.coords.longitude}`;
   const linkToMap = (
-    <A href={linkStr}>
+    <A href={linkStr} style={{
+      borderWidth:1,
+      borderColor: "black"
+      }}>
+      <Text>[{timeText}]</Text>
       LAT:{loc?.coords.latitude}, LON:{loc?.coords.longitude} (alt:{loc?.coords.altitude})
     </A>
   );
@@ -73,7 +96,7 @@ export default function Component() {
         }
       }
 
-      Rest.markerCreate(locToCreate);
+      const res = await Rest.markerCreate(locToCreate);
       setComment("");
       setLoc(null);
     },
@@ -81,9 +104,10 @@ export default function Component() {
   );
 
 
-  // const marker = (
-  //   <Marker coordinate={{ latitude: 35.645736, longitude: 139.747575 }} />
-  // );
+  // const marker = loc ? (
+  //   <Marker coordinate={loc?.coords!} />
+  // ) : <></>;
+
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
@@ -94,15 +118,15 @@ export default function Component() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.buttonBase, styles.sendInfo, enabled(!loc)]}
+          style={[styles.buttonBase, styles.sendInfo]}
           onPress={sendInfo}>
           <Text style={styles.text}>SEND</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.infos}>
-        <Text>[{timeText}]</Text>
         {linkToMap}
+        <Text style={styles.log}>{logText}</Text>
       </View>
 
       <View style={styles.inputs}>
@@ -115,15 +139,17 @@ export default function Component() {
         />
       </View>
 
-      {/* <MapView
+      <View style={styles.map}>
+        {/* <MapView
           provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          ref={(map) => {
-            MAPVIEW = map;
-          }}
         >
           {marker}
         </MapView>   */}
+        <WebView
+          style={styles.infos}
+          source={{ uri: linkStr }}
+        />
+      </View>
     </View>
   );
 }
@@ -142,9 +168,6 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 5
   },
-  // map: {
-  //   flex: 10,
-  // },
   buttons: {
     flex: 1,
     flexDirection: "row",
@@ -154,8 +177,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputs: {
-    flex: 5,
-    margin: 5,
+    flex: 3,
+    margin: 3,
+  },
+  map: {
+    backgroundColor: "gray",
+    flex: 7,
+    margin: -5
   },
   buttonBase: {
     flex: 1,
@@ -181,6 +209,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth:1,
     borderColor: "black"
+  },
+  log: {
+    color: "gray",
+    fontSize: 5,
   }
 });
 

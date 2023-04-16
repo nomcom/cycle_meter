@@ -1,4 +1,4 @@
-{
+module.exports = {
   "expo": {
     "name": "gps_logger",
     "slug": "gps_logger",
@@ -31,7 +31,7 @@
       "package": "com.nomurast.myapptemp",
       "config" : {
         "googleMaps": {
-          "apiKey": "__GOOGLEMAP_ANDROID_API_KEY__"
+          "apiKey": process.env.GOOGLEMAP_ANDROID_API_KEY
         }
       }
     },
