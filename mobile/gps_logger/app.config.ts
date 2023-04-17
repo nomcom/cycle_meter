@@ -25,6 +25,8 @@ module.exports = {
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "FOREGROUND_SERVICE",
+        "CAMERA",
+        "CAMERA_ROLL",
       ],
       package: "com.nomurast.myapptemp",
       config: {
@@ -42,7 +44,7 @@ module.exports = {
         "expo-location",
         {
           locationAlwaysAndWhenInUsePermission:
-            "Allow $(PRODUCT_NAME) to use your location.",
+            "アプリ $(PRODUCT_NAME) にLocationへのアクセスを許可します.",
         },
       ],
     ],
