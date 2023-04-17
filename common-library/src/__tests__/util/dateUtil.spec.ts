@@ -39,8 +39,14 @@ describe("dateUtil toUnixMilliSec", () => {
     expect(dateUtil.toUnixMilliSec("2020/12/12")).toBe(null);
   });
   test("OK", async () => {
-    expect(dateUtil.toUnixMilliSec("2020-02-28")).toBe(1582815600000);
-    expect(dateUtil.toUnixMilliSec("2020-02-29")).toBe(1582902000000);
-    expect(dateUtil.toUnixMilliSec("2020-03-01")).toBe(1582988400000);
+    expect(dateUtil.toUnixMilliSec("2020-02-28")).toBe(
+      1582815600000 - dateUtil.TIMEZONE_OFFSET_MILLISEC
+    );
+    expect(dateUtil.toUnixMilliSec("2020-02-29")).toBe(
+      1582902000000 - dateUtil.TIMEZONE_OFFSET_MILLISEC
+    );
+    expect(dateUtil.toUnixMilliSec("2020-03-01")).toBe(
+      1582988400000 - dateUtil.TIMEZONE_OFFSET_MILLISEC
+    );
   });
 });

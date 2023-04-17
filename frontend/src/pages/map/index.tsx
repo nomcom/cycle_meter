@@ -79,10 +79,17 @@ const App: React.FC = () => {
 
   const onSubmit = React.useCallback(async () => {
     const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
+    const timeFrom = document.getElementById("timeFrom") as HTMLInputElement;
     const dateTo = document.getElementById("dateTo") as HTMLInputElement;
+    const timeTo = document.getElementById("timeTo") as HTMLInputElement;
 
-    const startDate = util.dateUtil.toUnixMilliSec(dateFrom.value);
-    const endDate = util.dateUtil.toUnixMilliSec(dateTo.value, true);
+    const startDate = util.dateUtil.toUnixMilliSec(
+      dateFrom.value + (timeFrom.value ? ` ${timeFrom.value}` : "")
+    );
+    const endDate = util.dateUtil.toUnixMilliSec(
+      dateTo.value + (timeTo.value ? ` ${timeTo.value}` : ""),
+      true
+    );
     const response = await api.markersGet({
       orderBy: '"timestamp"',
       startAt: startDate ? startDate : undefined,
@@ -117,7 +124,11 @@ const App: React.FC = () => {
 
       // 日付設定
       dateFrom.value = util.dateUtil.toDateString(allMarkers[0].timestamp);
+      timeFrom.value = util.dateUtil.toTimeString(allMarkers[0].timestamp);
       dateTo.value = util.dateUtil.toDateString(
+        allMarkers[allMarkers.length - 1].timestamp
+      );
+      timeTo.value = util.dateUtil.toTimeString(
         allMarkers[allMarkers.length - 1].timestamp
       );
     }
@@ -152,7 +163,7 @@ const App: React.FC = () => {
   const but = (
     <label
       htmlFor="my-drawer"
-      className="fixed top-2 right-2 btn btn-primary drawer-button"
+      className="fixed top-2 right-2 btn btn-primary drawer-button lg:hidden"
     >
       Menu
     </label>
@@ -161,21 +172,21 @@ const App: React.FC = () => {
   const form = (
     <>
       <label htmlFor="my-drawer" className="drawer-overlay"></label>
-      <ul className="menu bg-gray-300 text-base-content">
-        <li>
-          <label className="label">
-            Zoom
+
+      <div className="grid grid-flow-row bg-slate-400/20 content-start justify-start gap-1.5 m-1">
+        <div className="form-control grid grid-flow-col justify-start gap-1.5">
+          <label className="input-group input-group-vertical w-24">
+            <span className="grid place-content-center">Zoom</span>
             <input
               type="number"
-              className="input w-full max-w-xs"
+              className="input input-bordered text-center"
               value={zoom}
               onChange={(event) => setZoom(Number(event.target.value))}
             />
           </label>
-        </li>
-        <li>
-          <label className="label">
-            Latitude
+
+          <label className="input-group input-group-vertical w-32">
+            <span>Lat.</span>
             <input
               type="number"
               value={center.lat}
@@ -183,10 +194,9 @@ const App: React.FC = () => {
               disabled
             />
           </label>
-        </li>
-        <li>
-          <label className="label">
-            Longitude
+
+          <label className="input-group input-group-vertical w-32">
+            <span>Lng.</span>
             <input
               type="number"
               value={center.lng}
@@ -194,32 +204,79 @@ const App: React.FC = () => {
               disabled
             />
           </label>
-        </li>
-        <li>
-          <div>
-            <label className="label">
-              From:
-              <input className="input" type="date" id="dateFrom" />
-            </label>
-            ～
-            <label className="label">
-              To:
-              <input className="input" type="date" id="dateTo" />
-            </label>
-          </div>
-        </li>
-        <li className={isLoaded ? "" : "disabled"}>
-          <a onClick={onSubmit}>データ取得</a>
-        </li>
-        <li className={isLoaded && mapLatLngs.length > 0 ? "" : "disabled"}>
-          <a onClick={onKml}>KMLダウンロード</a>
-        </li>
-      </ul>
+        </div>
+
+        <div className="form-control gap-1.5">
+          <label className="label">
+            <span className="label-text">From</span>
+          </label>
+          <label className="input-group">
+            <input className="input" type="date" id="dateFrom" />
+            <input className="input" type="time" id="timeFrom" />
+            <button className="btn">
+              <span
+                className="material-symbols-outlined bg-transparent"
+                onClick={() => {
+                  (
+                    document.getElementById("dateFrom") as HTMLInputElement
+                  ).value = "";
+                  (
+                    document.getElementById("timeFrom") as HTMLInputElement
+                  ).value = "";
+                }}
+              >
+                cancel
+              </span>
+            </button>
+          </label>
+
+          <label className="label">
+            <span className="label-text">To</span>
+          </label>
+          <label className="input-group">
+            <input className="input" type="date" id="dateTo" />
+            <input className="input" type="time" id="timeTo" />
+            <button className="btn">
+              <span
+                className="material-symbols-outlined bg-transparent"
+                onClick={() => {
+                  (
+                    document.getElementById("dateTo") as HTMLInputElement
+                  ).value = "";
+                  (
+                    document.getElementById("timeTo") as HTMLInputElement
+                  ).value = "";
+                }}
+              >
+                cancel
+              </span>
+            </button>
+          </label>
+        </div>
+
+        <div className="flex gap-1.5">
+          <button
+            onClick={onSubmit}
+            className={"bg-green-200 " + (isLoaded ? "" : "disabled")}
+          >
+            データ取得
+          </button>
+          <button
+            onClick={onKml}
+            className={
+              "bg-blue-200 " +
+              (isLoaded && mapLatLngs.length > 0 ? "" : "disabled")
+            }
+          >
+            KMLダウンロード
+          </button>
+        </div>
+      </div>
     </>
   );
 
   return (
-    <div className="drawer" style={{ height: "100%" }}>
+    <div className="drawer drawer-mobile" style={{ height: "100%" }}>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         <GoogleMap
@@ -235,7 +292,7 @@ const App: React.FC = () => {
         </GoogleMap>
       </div>
       {but}
-      <div className="drawer-side w-1/2">{form}</div>
+      <div className="drawer-side w-96 h-96 lg:h-full">{form}</div>
     </div>
   );
 };
