@@ -13,11 +13,14 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 // import * as TaskManager from "expo-task-manager";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import * as Rest from "../rest/api";
 import { A } from "@expo/html-elements";
+
+import { storage } from "../../firebaseConfig";
 
 import axios, {
   AxiosError,
@@ -25,7 +28,12 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-// let MAPVIEW: MapView | null = null;
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadString,
+} from "firebase/storage";
 
 export default function Component() {
   const [timeText, setTimeText] = useState("テスト");
@@ -33,6 +41,7 @@ export default function Component() {
   const [comment, setComment] = useState("");
   const [loc, setLoc] = useState<Location.LocationObject | null>(null);
   const [image, setImage] = useState<string | null>(null);
+  const [upimage, setUpImage] = useState<string | null>(null);
   const [cameraStatus, requestCameraPermissions] =
     ImagePicker.useCameraPermissions();
 
@@ -96,6 +105,23 @@ export default function Component() {
     if (!loc) {
       return;
     }
+
+    let imageUrl;
+    if (image) {
+      // TODO: Download
+      // imageUrl = await getDownloadURL(ref(storage, "images/stars.jpg"));
+      // setUpImage(imageUrl);
+      // UPLOAD
+      const message = await FileSystem.readAsStringAsync(image, {
+        encoding: "base64",
+      });
+      imageUrl = `marker/${loc.timestamp}`;
+      const storageRef = ref(storage, imageUrl);
+      console.log(`@@@TRY UPLOAD:${imageUrl}`);
+      const snapshot = await uploadString(storageRef, message, "base64");
+      console.log(`IMAGE UPLOADED:${JSON.stringify(snapshot)}`);
+    }
+
     // 型の差異(null -> undefined)を吸収する
     const coords = loc.coords as any;
     const locToCreate: Rest.MarkerCreateBody = {
@@ -108,6 +134,10 @@ export default function Component() {
       locToCreate.comment = {
         comment,
       };
+    }
+    if (imageUrl) {
+      // TODO:
+      locToCreate.imageId = imageUrl as any;
     }
 
     const res = await Rest.markerCreate(locToCreate);
@@ -171,6 +201,11 @@ export default function Component() {
           source={{ uri: image ? image : undefined }}
           style={{ width: 100, height: 100 }}
         />
+        <Image
+          source={{ uri: upimage ? upimage : undefined }}
+          style={{ width: 100, height: 100 }}
+        />
+
         <Text style={styles.log}>{logText}</Text>
       </View>
 
