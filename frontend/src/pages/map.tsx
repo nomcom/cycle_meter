@@ -173,7 +173,7 @@ const App: React.FC = () => {
     <>
       <label htmlFor="my-drawer" className="drawer-overlay"></label>
 
-      <div className="grid grid-flow-row bg-slate-400/20 content-start justify-start gap-1.5 m-1">
+      <div className="grid grid-flow-row content-start justify-start gap-1.5 m-1">
         <div className="form-control grid grid-flow-col justify-start gap-1.5">
           <label className="input-group input-group-vertical w-24">
             <span className="grid place-content-center">Zoom</span>
@@ -292,7 +292,9 @@ const App: React.FC = () => {
         </GoogleMap>
       </div>
       {but}
-      <div className="drawer-side w-96 h-96 lg:h-full">{form}</div>
+      <div className="drawer-side w-96 h-96 lg:h-full bg-slate-400/20 rounded-br-3xl">
+        {form}
+      </div>
     </div>
   );
 };

@@ -30,15 +30,7 @@ setApiServer(import.meta.env.VITE_REST_URL_BASE);
 
 ReactDOM.render(
   <React.StrictMode>
-    <nav className="w-full h-20 bg-red-200">
-      <a href={"/"}>
-        <div className="h-full flex bg-blue-200 max-w-5xl mx-auto p-1">
-          HEAD (IMG:/vite.svg
-          <img src="/vite.svg" className="logo" alt="/vite.svg" />)
-        </div>
-      </a>
-    </nav>
-    <div className="w-full h-[calc(100vh_-_5rem)] bg-green-200">
+    <div className="w-full h-[100vh] bg-slate-400">
       <Router>
         <App />
       </Router>
