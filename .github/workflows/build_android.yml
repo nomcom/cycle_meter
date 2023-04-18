@@ -1,3 +1,4 @@
+name: Build Android apk
 on:
   push:
     branches:
@@ -36,3 +37,9 @@ jobs:
           projectId: ${{ secrets.PROJECTID }}
           storageBucket: ${{ secrets.STORAGEBUCKET }}
           appId: ${{ secrets.APPID }}
+
+      - name: Archive APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: android apk
+          path: build-*.apk

@@ -14,6 +14,15 @@ import tokml from "@maphubs/tokml";
 //@ts-ignore
 import geojson from "geojson";
 
+import {
+  getStorage,
+  ref,
+  getBlob,
+  uploadString,
+  getBytes,
+} from "firebase/storage";
+import { storage } from "../firebaseConfig";
+
 const App: React.FC = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY, // ,
@@ -22,6 +31,9 @@ const App: React.FC = () => {
   const [map, setMap] = React.useState<any>(null);
   const [mapLatLngs, setMapLatLngs] = React.useState<google.maps.LatLng[]>([]);
   const [markers, setMarkers] = React.useState<MarkerCreateBody[]>([]);
+  const [markerText, setMarkerText] = React.useState("");
+  const [markerImg, setMarkerImg] = React.useState("");
+
   const [zoom, setZoom] = React.useState(12); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -139,7 +151,37 @@ const App: React.FC = () => {
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onClick = (e: google.maps.MapMouseEvent) => {
-    // avoid directly mutating state
+    //
+  };
+  const onClickMarker = async (index: number) => {
+    const loc = markers[index];
+    console.log(`CLICKED: ${JSON.stringify(loc)}`);
+
+    let isPop = false;
+    if (markers[index].imageId) {
+      // Imageあり
+      const imageId = `marker/${loc.timestamp}`;
+      const storageRef = ref(storage, imageId);
+      const blob = new Blob([await getBytes(storageRef)], {
+        // type: "image/jpeg",
+      });
+      const imageUrl = URL.createObjectURL(blob);
+      setMarkerImg(imageUrl);
+      util.htmlUtil.downloadUrl(imageUrl, `img_${loc.timestamp}.jpg`);
+      isPop = true;
+    }
+
+    if (markers[index].comment && markers[index].comment?.comment) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      setMarkerText(markers[index].comment!.comment!);
+      isPop = true;
+    }
+
+    if (isPop) {
+      // Modal
+      const check = document.getElementById("marker-modal") as HTMLInputElement;
+      check.checked = true;
+    }
   };
 
   let mapElements = null;
@@ -147,7 +189,13 @@ const App: React.FC = () => {
   mapElements = (
     <>
       {mapLatLngs.map((latLng, i) => (
-        <Marker key={i} position={latLng as google.maps.LatLng} />
+        <Marker
+          key={i}
+          position={latLng as google.maps.LatLng}
+          onClick={() => {
+            onClickMarker(i);
+          }}
+        />
       ))}
       <Polyline
         path={mapLatLngs as google.maps.LatLng[]}
@@ -275,6 +323,18 @@ const App: React.FC = () => {
     </>
   );
 
+  const modal = (
+    <>
+      <input type="checkbox" id="marker-modal" className="modal-toggle" />
+      <label htmlFor="marker-modal" className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
+          <img id="marker-image" src={markerImg}></img>
+          <span>{markerText}</span>
+        </label>
+      </label>
+    </>
+  );
+
   return (
     <div className="drawer drawer-mobile" style={{ height: "100%" }}>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -295,6 +355,7 @@ const App: React.FC = () => {
       <div className="drawer-side w-96 h-96 lg:h-full bg-slate-400/20 rounded-br-3xl">
         {form}
       </div>
+      {modal}
     </div>
   );
 };
