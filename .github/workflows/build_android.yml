@@ -31,15 +31,16 @@ jobs:
       - name: 🚀 Build app
         run: eas build --non-interactive --platform android --no-wait --profile preview --local
         env:
-          apiKey: ${{ secrets.APIKEY }}
-          authDomain: ${{ secrets.AUTHDOMAIN }}
-          databaseURL: ${{ secrets.DATABASEURL }}
-          projectId: ${{ secrets.PROJECTID }}
-          storageBucket: ${{ secrets.STORAGEBUCKET }}
-          appId: ${{ secrets.APPID }}
+          APIKEY: ${{ secrets.APIKEY }}
+          AUTHDOMAIN: ${{ secrets.AUTHDOMAIN }}
+          DATABASEURL: ${{ secrets.DATABASEURL }}
+          PROJECTID: ${{ secrets.PROJECTID }}
+          STORAGEBUCKET: ${{ secrets.STORAGEBUCKET }}
+          APPID: ${{ secrets.APPID }}
+          GOOGLEMAP_ANDROID_API_KEY: ${{ secrets.GOOGLEMAP_ANDROID_API_KEY }}
 
       - name: Archive APK
         uses: actions/upload-artifact@v3
         with:
           name: android apk
-          path: build-*.apk
+          path: mobile/gps_logger/build-*.apk
