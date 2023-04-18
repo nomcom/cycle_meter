@@ -1,5 +1,8 @@
 # rest_server_client
 
+[![.github/workflows/build_android.yml](https://github.com/nomcom/cycle_meter/actions/workflows/build_android.yml/badge.svg)](https://github.com/nomcom/cycle_meter/actions/workflows/build_android.yml)
+
+[![Deploy to Firebase Hosting on merge](https://github.com/nomcom/cycle_meter/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/nomcom/cycle_meter/actions/workflows/firebase-hosting-merge.yml)
 
 ### Realtime Database ルール
 ```
