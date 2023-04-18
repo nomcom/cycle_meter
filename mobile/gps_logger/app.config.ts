@@ -52,6 +52,12 @@ module.exports = {
       eas: {
         projectId: "5fa0eab4-ce91-4018-8a35-8bc4c68ecda1",
       },
+      APIKEY: process.env.APIKEY,
+      AUTHDOMAIN: process.env.AUTHDOMAIN,
+      DATABASEURL: process.env.DATABASEURL,
+      PROJECTID: process.env.PROJECTID,
+      STORAGEBUCKET: process.env.STORAGEBUCKET,
+      APPID: process.env.APPID,
     },
   },
 };

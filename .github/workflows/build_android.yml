@@ -29,3 +29,10 @@ jobs:
 
       - name: 🚀 Build app
         run: eas build --non-interactive --platform android --no-wait --profile preview --local
+        env:
+          apiKey: ${{ secrets.APIKEY }}
+          authDomain: ${{ secrets.AUTHDOMAIN }}
+          databaseURL: ${{ secrets.DATABASEURL }}
+          projectId: ${{ secrets.PROJECTID }}
+          storageBucket: ${{ secrets.STORAGEBUCKET }}
+          appId: ${{ secrets.APPID }}
