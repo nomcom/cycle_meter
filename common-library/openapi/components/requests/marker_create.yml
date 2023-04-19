@@ -50,8 +50,8 @@ post:
                 $ref: "../schemas/comment.yml"
             imageId:
               description: 画像ID
-              type: integer
-              example: 100101
+              type: string
+              example: marker/xxxxxx
 
   responses:
     "200":

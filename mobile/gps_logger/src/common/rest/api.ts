@@ -45,7 +45,7 @@ export type MarkerById200 = {
   /** Commentオブジェクト */
   comment?: MarkerById200Comment;
   /** 画像ID */
-  imageId?: number;
+  imageId?: string;
 };
 
 /**
@@ -83,7 +83,7 @@ export type MarkersGet200 = {[key: string]: {
   /** Commentオブジェクト */
   comment?: MarkersGet200Comment;
   /** 画像ID */
-  imageId?: number;
+  imageId?: string;
 }};
 
 export type MarkersGetParams = {
@@ -143,7 +143,7 @@ export type MarkerCreateBody = {
   /** Commentオブジェクト */
   comment?: MarkerCreateBodyComment;
   /** 画像ID */
-  imageId?: number;
+  imageId?: string;
 };
 
 

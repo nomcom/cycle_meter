@@ -14,13 +14,6 @@ import tokml from "@maphubs/tokml";
 //@ts-ignore
 import geojson from "geojson";
 
-import {
-  getStorage,
-  ref,
-  getBlob,
-  uploadString,
-  getBytes,
-} from "firebase/storage";
 import { storage } from "../firebaseConfig";
 
 const App: React.FC = () => {
@@ -40,6 +33,8 @@ const App: React.FC = () => {
     lng: 0,
   });
 
+  // ************* イベント関係 *************
+  // MAP
   const onLoad = React.useCallback(function callback(map: any) {
     setMap(map);
   }, []);
@@ -56,7 +51,8 @@ const App: React.FC = () => {
     [map]
   );
 
-  const onKml = React.useCallback(async () => {
+  // KMLダウンロード
+  const onKmlGet = React.useCallback(async () => {
     const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
     const dateTo = document.getElementById("dateTo") as HTMLInputElement;
     const fileName = `${dateFrom.value}_${dateTo.value}.kml`;
@@ -89,6 +85,25 @@ const App: React.FC = () => {
     util.htmlUtil.downloadText(response, fileName);
   }, [markers]);
 
+  // 画像ダウンロード
+  const onImageGet = React.useCallback(async () => {
+    // 全画像ダウンロード
+    const promises = markers
+      .filter((loc) => loc.imageId)
+      .map((loc) =>
+        (async () => {
+          const imageUrl = await util.firebaseUtil.getInStorageAsync(
+            storage,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            loc.imageId!
+          );
+          util.htmlUtil.downloadUrl(imageUrl, `img_${loc.timestamp}.jpg`);
+        })()
+      );
+    await Promise.all(promises);
+  }, [markers]);
+
+  // データ取得
   const onSubmit = React.useCallback(async () => {
     const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
     const timeFrom = document.getElementById("timeFrom") as HTMLInputElement;
@@ -126,22 +141,19 @@ const App: React.FC = () => {
           )
       );
 
-      // setMapLatLngs(mapLatLngs.concat(newLatLngs));
-      // const allMarkers = markers.concat(newMarkers);
+      setMarkers(newMarkers);
       setMapLatLngs(newLatLngs);
-      const allMarkers = newMarkers;
-      setMarkers(allMarkers);
 
       setCenter(newLatLngs[newLatLngs.length - 1].toJSON());
 
       // 日付設定
-      dateFrom.value = util.dateUtil.toDateString(allMarkers[0].timestamp);
-      timeFrom.value = util.dateUtil.toTimeString(allMarkers[0].timestamp);
+      dateFrom.value = util.dateUtil.toDateString(newMarkers[0].timestamp);
+      timeFrom.value = util.dateUtil.toTimeString(newMarkers[0].timestamp);
       dateTo.value = util.dateUtil.toDateString(
-        allMarkers[allMarkers.length - 1].timestamp
+        newMarkers[newMarkers.length - 1].timestamp
       );
       timeTo.value = util.dateUtil.toTimeString(
-        allMarkers[allMarkers.length - 1].timestamp
+        newMarkers[newMarkers.length - 1].timestamp
       );
     }
   }, []);
@@ -160,21 +172,23 @@ const App: React.FC = () => {
     let isPop = false;
     if (markers[index].imageId) {
       // Imageあり
-      const imageId = `marker/${loc.timestamp}`;
-      const storageRef = ref(storage, imageId);
-      const blob = new Blob([await getBytes(storageRef)], {
-        // type: "image/jpeg",
-      });
-      const imageUrl = URL.createObjectURL(blob);
+      const imageUrl = await util.firebaseUtil.getInStorageAsync(
+        storage,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        markers[index].imageId!
+      );
       setMarkerImg(imageUrl);
-      util.htmlUtil.downloadUrl(imageUrl, `img_${loc.timestamp}.jpg`);
       isPop = true;
+    } else {
+      setMarkerImg("");
     }
 
     if (markers[index].comment && markers[index].comment?.comment) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setMarkerText(markers[index].comment!.comment!);
       isPop = true;
+    } else {
+      setMarkerText("");
     }
 
     if (isPop) {
@@ -188,15 +202,36 @@ const App: React.FC = () => {
   // ロード済みの場合のみ
   mapElements = (
     <>
-      {mapLatLngs.map((latLng, i) => (
-        <Marker
-          key={i}
-          position={latLng as google.maps.LatLng}
-          onClick={() => {
-            onClickMarker(i);
-          }}
-        />
-      ))}
+      {mapLatLngs.map((latLng, i) => {
+        const isClickable =
+          markers[i] && (markers[i].imageId || markers[i].comment);
+        if (isClickable) {
+          // クリック可
+          return (
+            <Marker
+              key={i}
+              position={latLng as google.maps.LatLng}
+              onClick={() => {
+                onClickMarker(i);
+              }}
+            />
+          );
+        } else {
+          // クリック不可
+          return (
+            <Marker
+              key={i}
+              position={latLng as google.maps.LatLng}
+              opacity={0.75}
+              icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                strokeColor: "red",
+                scale: 4,
+              }}
+            />
+          );
+        }
+      })}
       <Polyline
         path={mapLatLngs as google.maps.LatLng[]}
         options={{
@@ -309,14 +344,25 @@ const App: React.FC = () => {
           >
             データ取得
           </button>
+
           <button
-            onClick={onKml}
+            onClick={onKmlGet}
             className={
               "bg-blue-200 " +
               (isLoaded && mapLatLngs.length > 0 ? "" : "disabled")
             }
           >
             KMLダウンロード
+          </button>
+
+          <button
+            onClick={onImageGet}
+            className={
+              "bg-red-200 " +
+              (isLoaded && mapLatLngs.length > 0 ? "" : "disabled")
+            }
+          >
+            画像ダウンロード
           </button>
         </div>
       </div>

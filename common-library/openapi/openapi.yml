@@ -82,8 +82,8 @@ paths:
                       example: あいうえお abc 12345
                 imageId:
                   description: 画像ID
-                  type: integer
-                  example: 100101
+                  type: string
+                  example: marker/xxxxxx
       responses:
         '200':
           description: Markerオブジェクト生成結果
@@ -198,8 +198,8 @@ paths:
                           example: あいうえお abc 12345
                     imageId:
                       description: 画像ID
-                      type: integer
-                      example: 100101
+                      type: string
+                      example: marker/xxxxxx
   /marker/select.json:
     get:
       operationId: marker_by_id
@@ -281,5 +281,5 @@ paths:
                         example: あいうえお abc 12345
                   imageId:
                     description: 画像ID
-                    type: integer
-                    example: 100101
+                    type: string
+                    example: marker/xxxxxx
