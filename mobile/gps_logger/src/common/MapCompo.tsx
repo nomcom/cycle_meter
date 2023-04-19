@@ -45,8 +45,9 @@ export default function Component() {
   const [cameraStatus, requestCameraPermissions] =
     ImagePicker.useCameraPermissions();
 
-  // Request permissions right after starting the app
+  // ************* 初期化処理 *************
   useEffect(() => {
+    // Request permissions right after starting the app
     const requestPermissions = async () => {
       // Location
       const foreground = await Location.requestForegroundPermissionsAsync();
@@ -58,6 +59,7 @@ export default function Component() {
     };
     requestPermissions();
 
+    // REST通信ログ出力
     axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       const url = `${config.baseURL}${config.url}`;
       setLogText(
@@ -80,27 +82,15 @@ export default function Component() {
     );
   }, []);
 
+  // ************* イベント関係 *************
+  // 情報取得
   const getInfo = React.useCallback(async () => {
     let location = await Location.getCurrentPositionAsync({});
     setTimeText(new Date(location.timestamp).toISOString());
     setLoc(location);
   }, []);
 
-  const linkStr = `https://www.google.com/maps/search/?api=1&query=${loc?.coords.latitude}%2C${loc?.coords.longitude}`;
-  const linkToMap = (
-    <A
-      href={linkStr}
-      style={{
-        borderWidth: 1,
-        borderColor: "black",
-      }}
-    >
-      <Text>[{timeText}]</Text>
-      LAT:{loc?.coords.latitude}, LON:{loc?.coords.longitude} (alt:
-      {loc?.coords.altitude})
-    </A>
-  );
-
+  // 情報送信
   const sendInfo = React.useCallback(async () => {
     if (!loc) {
       return;
@@ -146,6 +136,7 @@ export default function Component() {
     setImage(null);
   }, [loc, comment]);
 
+  // 画像取得
   const getPict = React.useCallback(async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -168,6 +159,25 @@ export default function Component() {
     setImage(result.assets[0].uri);
   }, []);
 
+  // ************* 画面要素関係 *************
+  // Google Map Web画面用リンクテキスト
+  const linkStr = `https://www.google.com/maps/search/?api=1&query=${loc?.coords.latitude}%2C${loc?.coords.longitude}`;
+  // 最新取得情報
+  const newestInfo = (
+    <A
+      href={linkStr}
+      style={{
+        borderWidth: 1,
+        borderColor: "black",
+      }}
+    >
+      <Text>[{timeText}]</Text>
+      LAT:{loc?.coords.latitude}, LON:{loc?.coords.longitude} (alt:
+      {loc?.coords.altitude})
+    </A>
+  );
+
+  // Google Map Marker
   const marker = loc ? <Marker coordinate={loc?.coords!} /> : <></>;
 
   return (
@@ -196,7 +206,7 @@ export default function Component() {
       </View>
 
       <View style={styles.infos}>
-        {linkToMap}
+        {newestInfo}
         <Image
           source={{ uri: image ? image : undefined }}
           style={{ width: 100, height: 100 }}
@@ -233,13 +243,6 @@ export default function Component() {
 }
 
 // Styles
-const enabled = (isEnabled: boolean): ViewStyle | undefined => {
-  if (!isEnabled) {
-    return {
-      backgroundColor: "gray",
-    };
-  }
-};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
