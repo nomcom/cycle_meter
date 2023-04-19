@@ -27,19 +27,14 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import {
-  getStorage,
-  ref,
-  getDownloadURL,
-  uploadString,
-} from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 
 export default function Component() {
   const [timeText, setTimeText] = useState("テスト");
   const [logText, setLogText] = useState(axios.defaults.baseURL);
   const [comment, setComment] = useState("");
   const [loc, setLoc] = useState<Location.LocationObject | null>(null);
-  const [image, setImage] = useState<string | null>(null);
+  const [imageDataUrl, setImage] = useState<string | null>(null);
   const [upimage, setUpImage] = useState<string | null>(null);
   const [cameraStatus, requestCameraPermissions] =
     ImagePicker.useCameraPermissions();
@@ -95,22 +90,7 @@ export default function Component() {
       return;
     }
 
-    let imageUrl;
-    if (image) {
-      // TODO: Download
-      // imageUrl = await getDownloadURL(ref(storage, "images/stars.jpg"));
-      // setUpImage(imageUrl);
-      // UPLOAD
-      const message = await FileSystem.readAsStringAsync(image, {
-        encoding: "base64",
-      });
-      imageUrl = `marker/${loc.timestamp}`;
-      const storageRef = ref(storage, imageUrl);
-      console.log(`@@@TRY UPLOAD:${imageUrl}`);
-      const snapshot = await uploadString(storageRef, message, "base64");
-      console.log(`IMAGE UPLOADED:${JSON.stringify(snapshot)}`);
-    }
-
+    // 送信用データの基本を生成
     // 型の差異(null -> undefined)を吸収する
     const coords = loc.coords as any;
     const locToCreate: Rest.MarkerCreateBody = {
@@ -119,17 +99,32 @@ export default function Component() {
     Object.keys(coords).forEach((key) => {
       (locToCreate as any)[key] = coords[key] == null ? undefined : coords[key];
     });
+
+    // 送信用画像がある場合
+    if (imageDataUrl) {
+      // Firebase Strogeに保存
+      const blob = await fetch(imageDataUrl).then((r) => r.blob());
+      const imageUrl = `marker/${loc.timestamp}`;
+      const storageRef = ref(storage, imageUrl);
+      console.log(`@@@TRY UPLOAD:${imageUrl}`);
+      const snapshot = await uploadBytes(storageRef, blob);
+      console.log(`IMAGE UPLOADED:${JSON.stringify(snapshot)}`);
+
+      // Firebase StrogeのURLをIDとして送信
+      locToCreate.imageId = imageUrl as any;
+    }
+
+    // 送信用コメントがある場合
     if (comment) {
       locToCreate.comment = {
         comment,
       };
     }
-    if (imageUrl) {
-      // TODO:
-      locToCreate.imageId = imageUrl as any;
-    }
 
+    // 送信
     const res = await Rest.markerCreate(locToCreate);
+
+    // 送信用データをクリア
     setComment("");
     setLoc(null);
     setImage(null);
@@ -207,7 +202,7 @@ export default function Component() {
       <View style={styles.infos}>
         {newestInfo}
         <Image
-          source={{ uri: image ? image : undefined }}
+          source={{ uri: imageDataUrl ? imageDataUrl : undefined }}
           style={{ width: 100, height: 100 }}
         />
         <Image
