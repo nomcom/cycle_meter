@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "init": "cpx -C ../../common-library/src/** src/common/",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.0.14",
+    "cpx": "^1.5.0",
     "typescript": "^4.9.4"
   },
   "private": true

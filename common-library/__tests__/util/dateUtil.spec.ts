@@ -1,5 +1,5 @@
 import { describe, test, expect } from "@jest/globals";
-import { dateUtil } from "../../util/index.js";
+import { dateUtil } from "../../src/util/index.js";
 
 describe("dateUtil toDateString", () => {
   // beforeAll(() => {});

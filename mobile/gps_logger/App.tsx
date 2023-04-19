@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
-import MapCompo from "./src/common/MapCompo";
+import MapCompo from "./src/component/MapCompo";
 
 import axios from "axios";
 axios.defaults.baseURL = "https://cycle-54ee5-default-rtdb.firebaseio.com/";

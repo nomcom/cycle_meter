@@ -5,7 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ViewStyle,
   Image,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
@@ -17,7 +16,7 @@ import * as FileSystem from "expo-file-system";
 // import * as TaskManager from "expo-task-manager";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-import * as Rest from "../rest/api";
+import * as Rest from "../common/rest/api";
 import { A } from "@expo/html-elements";
 
 import { storage } from "../../firebaseConfig";
@@ -247,7 +246,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    padding: 5
+    padding: 5,
   },
   buttons: {
     flex: 1,
@@ -264,11 +263,11 @@ const styles = StyleSheet.create({
   mapContainer: {
     backgroundColor: "gray",
     flex: 7,
-    margin: -5
+    margin: -5,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   buttonBase: {
     flex: 1,
@@ -296,12 +295,11 @@ const styles = StyleSheet.create({
   },
   textArea: {
     flex: 1,
-    borderWidth:1,
-    borderColor: "black"
+    borderWidth: 1,
+    borderColor: "black",
   },
   log: {
     color: "gray",
     fontSize: 5,
-  }
+  },
 });
-

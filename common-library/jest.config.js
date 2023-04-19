@@ -27,9 +27,7 @@ export default {
   collectCoverage: true,
   // 取得する対象のファイルを指定する globパターンの配列
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/app.ts',
-    '!src/rest/**/*',
+    '__tests__/**/*.{js,jsx,ts,tsx}',
   ],
   // 出力するファイルを格納するディレクトリ
   coverageDirectory: "../doc/coverage/common-library"

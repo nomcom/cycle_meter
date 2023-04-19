@@ -1,5 +1,5 @@
 import { describe, test, expect } from "@jest/globals";
-import { strUtil } from "../../util/index.js";
+import { strUtil } from "../../src/util/index.js";
 
 describe("strUtil isTrue", () => {
   // beforeAll(() => {});
