@@ -12,7 +12,6 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 // import * as TaskManager from "expo-task-manager";
 // import BouncyCheckbox from "react-native-bouncy-checkbox";
 
@@ -35,7 +34,6 @@ export default function Component() {
   const [comment, setComment] = useState("");
   const [loc, setLoc] = useState<Location.LocationObject | null>(null);
   const [imageDataUrl, setImage] = useState<string | null>(null);
-  const [upimage, setUpImage] = useState<string | null>(null);
   const [cameraStatus, requestCameraPermissions] =
     ImagePicker.useCameraPermissions();
 
@@ -134,8 +132,8 @@ export default function Component() {
   const getPict = React.useCallback(async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
+      // aspect: [4, 3],
+      exif: true,
       quality: 1,
     });
 
@@ -203,10 +201,6 @@ export default function Component() {
         {newestInfo}
         <Image
           source={{ uri: imageDataUrl ? imageDataUrl : undefined }}
-          style={{ width: 100, height: 100 }}
-        />
-        <Image
-          source={{ uri: upimage ? upimage : undefined }}
           style={{ width: 100, height: 100 }}
         />
 
