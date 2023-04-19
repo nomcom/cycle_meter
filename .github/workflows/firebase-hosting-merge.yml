@@ -18,6 +18,7 @@ jobs:
           touch frontend/.env
           echo VITE_REST_URL_BASE=${{ secrets.VITE_REST_URL_BASE }} >> frontend/.env
           echo VITE_GOOGLE_MAP_API_KEY=${{ secrets.VITE_GOOGLE_MAP_API_KEY }} >> frontend/.env
+          echo VITE_STORAGEBUCKET=${{ secrets.VITE_STORAGEBUCKET }} >> frontend/.env
           cat frontend/.env
           npm run build:front
       - uses: FirebaseExtended/action-hosting-deploy@v0
