@@ -44,7 +44,7 @@ export const getDateTimeValue = (input: HTMLInputElement, instead = "") => {
     }
   }
   if (input.type.toLowerCase() == "time") {
-    if (dateUtil.toUnixMilliSec(`2000/01/01 ${input.value}`)) {
+    if (dateUtil.toUnixMilliSec(`2000-01-01 ${input.value}`)) {
       return input.value;
     }
   }

@@ -144,7 +144,7 @@ const App: React.FC = () => {
       setTimeFrom(newMarkers[0].timestamp);
       setTimeTo(newMarkers[newMarkers.length - 1].timestamp);
     }
-  }, [timeFrom]);
+  }, [timeFrom, timeTo]);
 
   // Google Map Event
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -283,19 +283,18 @@ const App: React.FC = () => {
           </label>
         </div>
 
-        <div className="form-control gap-1.5">
-          <DateTime
-            title="From"
-            unixmilli={timeFrom}
-            onChange={(val) => setTimeFrom(val)}
-          ></DateTime>
+        <DateTime
+          title="From"
+          unixmilli={timeFrom}
+          onChange={(val) => setTimeFrom(val)}
+        ></DateTime>
 
-          <DateTime
-            title="To"
-            unixmilli={timeTo}
-            onChange={(val) => setTimeTo(val)}
-          ></DateTime>
-        </div>
+        <DateTime
+          title="To"
+          unixmilli={timeTo}
+          onChange={(val) => setTimeTo(val)}
+          isEnd={true}
+        ></DateTime>
 
         <div className="flex gap-1.5">
           <button

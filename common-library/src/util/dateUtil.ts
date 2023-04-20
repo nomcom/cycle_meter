@@ -78,7 +78,7 @@ export const toUnixMilliSec = (
   const date = new Date(0);
   date.setFullYear(parseInt(dateMatch[1], 10));
   date.setMonth(parseInt(dateMatch[2], 10) - 1);
-  date.setDate(parseInt(dateMatch[3], 10) + (isEnd ? 1 : 0));
+  date.setDate(parseInt(dateMatch[3], 10));
 
   const datetimeMatch = val.match(
     /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/
@@ -88,5 +88,14 @@ export const toUnixMilliSec = (
     date.setMinutes(parseInt(datetimeMatch[5], 10));
     date.setSeconds(parseInt(datetimeMatch[6], 10));
   }
-  return date.getTime() - (isEnd ? 1 : 0);
+
+  if (isEnd) {
+    if (datetimeMatch) {
+      date.setSeconds(date.getSeconds() + 1);
+    } else {
+      date.setDate(date.getDate() + 1);
+    }
+    return date.getTime() - 1;
+  }
+  return date.getTime();
 };

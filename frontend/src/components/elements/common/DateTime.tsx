@@ -1,4 +1,4 @@
-import { ReactElement, useRef } from "react";
+import * as React from "react";
 import { util } from "common-library";
 
 /**
@@ -8,22 +8,24 @@ export const DateTime = (props: {
   title: string;
   unixmilli: number | null;
   onChange?: (unixmilli: number | null) => void;
-}): ReactElement => {
+  isEnd?: boolean;
+}): React.ReactElement => {
   // HTML要素
-  const dateRef = useRef<HTMLInputElement>(null);
-  const timeRef = useRef<HTMLInputElement>(null);
+  const dateRef = React.useRef<HTMLInputElement>(null);
+  const timeRef = React.useRef<HTMLInputElement>(null);
 
   // 処理登録
-  const setTime = (unixmilli: number | null) => {
+  const setTime = React.useCallback((unixmilli: number | null) => {
     if (dateRef.current) {
       dateRef.current.value = util.dateUtil.toDateString(unixmilli);
     }
     if (timeRef.current) {
       timeRef.current.value = util.dateUtil.toTimeString(unixmilli);
     }
-  };
+    onChange();
+  }, []);
 
-  const getTime = () => {
+  const onChange = React.useCallback(() => {
     if (!props.onChange || !dateRef.current || !timeRef.current) {
       return;
     }
@@ -32,14 +34,18 @@ export const DateTime = (props: {
       dateRef.current.value +
         " " +
         // 時間がなければ日付だけで変換
-        util.htmlUtil.getDateTimeValue(timeRef.current)
+        util.htmlUtil.getDateTimeValue(timeRef.current),
+      props.isEnd
     );
     // コールバックを呼び出し
     props.onChange(unixmilli);
-  };
+  }, [props]);
 
-  // 日時設定
-  setTime(props.unixmilli);
+  React.useEffect(() => {
+    // 日時設定
+    setTime(props.unixmilli);
+  }, [props.unixmilli]);
+
   return (
     <>
       <label className="label">
@@ -51,14 +57,14 @@ export const DateTime = (props: {
           className="input"
           type="date"
           step="1"
-          onChange={() => getTime()}
+          onChange={() => onChange()}
         />
         <input
           ref={timeRef}
           className="input"
           type="time"
           step="1"
-          onChange={() => getTime()}
+          onChange={() => onChange()}
         />
         <button className="btn">
           <span
