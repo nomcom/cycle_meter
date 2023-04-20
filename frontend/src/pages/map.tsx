@@ -16,6 +16,8 @@ import geojson from "geojson";
 
 import { storage } from "../firebaseConfig";
 
+import { DateTime } from "../components/elements/common/DateTime";
+
 const App: React.FC = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY, // ,
@@ -26,6 +28,9 @@ const App: React.FC = () => {
   const [markers, setMarkers] = React.useState<MarkerCreateBody[]>([]);
   const [markerText, setMarkerText] = React.useState("");
   const [markerImg, setMarkerImg] = React.useState("");
+
+  const [timeFrom, setTimeFrom] = React.useState<number | null>(null);
+  const [timeTo, setTimeTo] = React.useState<number | null>(null);
 
   const [zoom, setZoom] = React.useState(12); // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
@@ -39,7 +44,7 @@ const App: React.FC = () => {
     setMap(map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map: any) {
+  const onUnmount = React.useCallback(function callback() {
     setMap(null);
   }, []);
   const onZoomChanged = React.useCallback(
@@ -53,9 +58,10 @@ const App: React.FC = () => {
 
   // KMLダウンロード
   const onKmlGet = React.useCallback(async () => {
-    const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
-    const dateTo = document.getElementById("dateTo") as HTMLInputElement;
-    const fileName = `${dateFrom.value}_${dateTo.value}.kml`;
+    const fileName = `${util.dateUtil.toDateStringFormat(
+      timeFrom,
+      "yyyyMMdd"
+    )}_${util.dateUtil.toDateStringFormat(timeTo, "yyyyMMdd")}.kml`;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const org: any = markers.map((m) => {
@@ -105,22 +111,10 @@ const App: React.FC = () => {
 
   // データ取得
   const onSubmit = React.useCallback(async () => {
-    const dateFrom = document.getElementById("dateFrom") as HTMLInputElement;
-    const timeFrom = document.getElementById("timeFrom") as HTMLInputElement;
-    const dateTo = document.getElementById("dateTo") as HTMLInputElement;
-    const timeTo = document.getElementById("timeTo") as HTMLInputElement;
-
-    const startDate = util.dateUtil.toUnixMilliSec(
-      dateFrom.value + (timeFrom.value ? ` ${timeFrom.value}` : "")
-    );
-    const endDate = util.dateUtil.toUnixMilliSec(
-      dateTo.value + (timeTo.value ? ` ${timeTo.value}` : ""),
-      true
-    );
     const response = await api.markersGet({
       orderBy: '"timestamp"',
-      startAt: startDate ? startDate : undefined,
-      endAt: endDate ? endDate : undefined,
+      startAt: timeFrom ? timeFrom : undefined,
+      endAt: timeTo ? timeTo : undefined,
       limitToFirst: 100,
     });
 
@@ -147,57 +141,57 @@ const App: React.FC = () => {
       setCenter(newLatLngs[newLatLngs.length - 1].toJSON());
 
       // 日付設定
-      dateFrom.value = util.dateUtil.toDateString(newMarkers[0].timestamp);
-      timeFrom.value = util.dateUtil.toTimeString(newMarkers[0].timestamp);
-      dateTo.value = util.dateUtil.toDateString(
-        newMarkers[newMarkers.length - 1].timestamp
-      );
-      timeTo.value = util.dateUtil.toTimeString(
-        newMarkers[newMarkers.length - 1].timestamp
-      );
+      setTimeFrom(newMarkers[0].timestamp);
+      setTimeTo(newMarkers[newMarkers.length - 1].timestamp);
     }
+  }, [timeFrom]);
+
+  // Google Map Event
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onClick = React.useCallback((e: google.maps.MapMouseEvent) => {
+    //
   }, []);
+  const onClickMarker = React.useCallback(
+    async (index: number) => {
+      const loc = markers[index];
+      console.log(`CLICKED: ${JSON.stringify(loc)}`);
+
+      let isPop = false;
+      if (markers[index].imageId) {
+        // Imageあり
+        const imageUrl = await util.firebaseUtil.getInStorageAsync(
+          storage,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          markers[index].imageId!
+        );
+        setMarkerImg(imageUrl);
+        isPop = true;
+      } else {
+        setMarkerImg("");
+      }
+
+      if (markers[index].comment && markers[index].comment?.comment) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        setMarkerText(markers[index].comment!.comment!);
+        isPop = true;
+      } else {
+        setMarkerText("");
+      }
+
+      if (isPop) {
+        // Modal
+        const check = document.getElementById(
+          "marker-modal"
+        ) as HTMLInputElement;
+        check.checked = true;
+      }
+    },
+    [markers]
+  );
 
   if (!isLoaded) {
     return <></>;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onClick = (e: google.maps.MapMouseEvent) => {
-    //
-  };
-  const onClickMarker = async (index: number) => {
-    const loc = markers[index];
-    console.log(`CLICKED: ${JSON.stringify(loc)}`);
-
-    let isPop = false;
-    if (markers[index].imageId) {
-      // Imageあり
-      const imageUrl = await util.firebaseUtil.getInStorageAsync(
-        storage,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        markers[index].imageId!
-      );
-      setMarkerImg(imageUrl);
-      isPop = true;
-    } else {
-      setMarkerImg("");
-    }
-
-    if (markers[index].comment && markers[index].comment?.comment) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setMarkerText(markers[index].comment!.comment!);
-      isPop = true;
-    } else {
-      setMarkerText("");
-    }
-
-    if (isPop) {
-      // Modal
-      const check = document.getElementById("marker-modal") as HTMLInputElement;
-      check.checked = true;
-    }
-  };
-
   let mapElements = null;
   // ロード済みの場合のみ
   mapElements = (
@@ -290,51 +284,17 @@ const App: React.FC = () => {
         </div>
 
         <div className="form-control gap-1.5">
-          <label className="label">
-            <span className="label-text">From</span>
-          </label>
-          <label className="input-group">
-            <input className="input" type="date" id="dateFrom" />
-            <input className="input" type="time" id="timeFrom" />
-            <button className="btn">
-              <span
-                className="material-symbols-outlined bg-transparent"
-                onClick={() => {
-                  (
-                    document.getElementById("dateFrom") as HTMLInputElement
-                  ).value = "";
-                  (
-                    document.getElementById("timeFrom") as HTMLInputElement
-                  ).value = "";
-                }}
-              >
-                cancel
-              </span>
-            </button>
-          </label>
+          <DateTime
+            title="From"
+            unixmilli={timeFrom}
+            onChange={(val) => setTimeFrom(val)}
+          ></DateTime>
 
-          <label className="label">
-            <span className="label-text">To</span>
-          </label>
-          <label className="input-group">
-            <input className="input" type="date" id="dateTo" />
-            <input className="input" type="time" id="timeTo" />
-            <button className="btn">
-              <span
-                className="material-symbols-outlined bg-transparent"
-                onClick={() => {
-                  (
-                    document.getElementById("dateTo") as HTMLInputElement
-                  ).value = "";
-                  (
-                    document.getElementById("timeTo") as HTMLInputElement
-                  ).value = "";
-                }}
-              >
-                cancel
-              </span>
-            </button>
-          </label>
+          <DateTime
+            title="To"
+            unixmilli={timeTo}
+            onChange={(val) => setTimeTo(val)}
+          ></DateTime>
         </div>
 
         <div className="flex gap-1.5">

@@ -12,9 +12,6 @@ export const TIMEZONE_OFFSET_MILLISEC = new Date().getTimezoneOffset() * 60000;
  * @returns 結果
  */
 export const toDateString = (val: number | null): string => {
-  if (!val) {
-    return "";
-  }
   return toDateStringFormat(val, "yyyy-MM-dd");
 };
 /**
@@ -25,20 +22,24 @@ export const toDateString = (val: number | null): string => {
  * @returns 結果
  */
 export const toTimeString = (val: number | null): string => {
-  if (!val) {
-    return "";
-  }
   return toDateStringFormat(val, "hh:mm:ss");
 };
 
 /**
- * Unixミリ秒をyyyy-MM-mm形式文字列(ローカル時間(タイムゾーン込み))に変換する
+ * Unixミリ秒を指定した形式文字列(ローカル時間(タイムゾーン込み))に変換する
  * 変換不能の場合は空文字を返す
  * @param val 対象
  * @param withTime 時間も付与する
  * @returns 結果
  */
-export const toDateStringFormat = (val: number, format: string): string => {
+export const toDateStringFormat = (
+  val: number | null,
+  format: string
+): string => {
+  if (!val) {
+    return "";
+  }
+
   const date = new Date(val);
   // getxxxで取得する値はローカル時間(タイムゾーン込み)
   const yyyy = String(date.getFullYear());

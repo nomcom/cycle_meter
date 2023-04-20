@@ -10,3 +10,4 @@ export * as util from "./util/index.js";
 export const setApiServer = (baseurl: string) => {
   axios.defaults.baseURL = baseurl;
 };
+
