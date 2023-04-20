@@ -4,23 +4,37 @@
 
 [![Deploy to Firebase Hosting on merge](https://github.com/nomcom/cycle_meter/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/nomcom/cycle_meter/actions/workflows/firebase-hosting-merge.yml)
 
-### Realtime Database ルール
+
+## Firebase
+
+https://firebase.google.com/docs/cli?authuser=0&hl=ja#windows-npm
+
+1. Firebase CLI のインストール
+
 ```
-{
-  "rules": {
-    ".read": "now < 1682521200000",  // 2023-4-27
-    ".write": "now < 1682521200000",  // 2023-4-27
-    "marker" :{
-      "create" :{
-        ".indexOn": "timestamp"
-      }
-    }
-  }
-}
+npm install --save-dev firebase-tools
 ```
 
-### JSON
+2. ログイン
+
 ```
-開始、終了指定 ＆ 最初から10件
-/marker/create.json?orderBy="timestamp"&startAt=3&endAt=1680297912074&limitToFirst=10&print=pretty
+npx firebase login
+
+# チェック
+npx firebase projects:list
+```
+
+認証画面が表示される。（Firebase CLI が Google アカウントへのアクセスをリクエストしています → 「許可」）
+
+3. 初期化
+   対象 PJ フォルダ内で以下を実行
+
+```
+npx firebase init
+```
+
+4. デプロイ
+
+```
+npx firebase deploy
 ```

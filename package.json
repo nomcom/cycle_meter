@@ -1,15 +1,14 @@
 {
   "name": "cycle_meter",
   "version": "1.0.0",
-  "description": "```\r {\r   \"rules\": {\r     \".read\": \"now < 1682521200000\",  // 2023-4-27\r     \".write\": \"now < 1682521200000\",  // 2023-4-27\r     \"marker\" :{\r       \"create\" :{\r         \".indexOn\": \"timestamp\"\r       }\r     }\r   }\r }\r ```",
-  "main": "index.js",
+  "description": "",
   "directories": {
     "doc": "doc"
   },
-  "devDependencies": {},
   "scripts": {
     "build:common": "cd common-library && npm install && npm run build",
-    "build:front": "npm run build:common && cd frontend && npm install && npm run build"
+    "build:front": "npm run build:common && cd frontend && npm install && npm run build",
+    "deploy": "firebase login && firebase deploy --only database"
   },
   "repository": {
     "type": "git",
@@ -20,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/nomcom/cycle_meter/issues"
   },
-  "homepage": "https://github.com/nomcom/cycle_meter#readme"
+  "homepage": "https://github.com/nomcom/cycle_meter#readme",
+  "devDependencies": {
+    "firebase-tools": "^11.28.0"
+  }
 }
