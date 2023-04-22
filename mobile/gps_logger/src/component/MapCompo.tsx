@@ -29,6 +29,7 @@ import axios, {
 import { ref, uploadBytes } from "firebase/storage";
 
 export default function Component() {
+  const [map, setMap] = useState<MapView | null>(null);
   const [timeText, setTimeText] = useState("テスト");
   const [logText, setLogText] = useState(axios.defaults.baseURL);
   const [comment, setComment] = useState("");
@@ -73,6 +74,16 @@ export default function Component() {
       }
     );
   }, []);
+  useEffect(() => {
+    if(map){
+      (async () => {
+        const cam = await map.getCamera();
+        cam.zoom = 15;
+        map.setCamera(cam);
+      })();
+    }
+  }, [map]);
+
 
   // ************* イベント関係 *************
   // 情報取得
@@ -80,6 +91,14 @@ export default function Component() {
     let location = await Location.getCurrentPositionAsync({});
     setTimeText(new Date(location.timestamp).toISOString());
     setLoc(location);
+    if(map){
+      map.animateToRegion({
+        latitude : location.coords.latitude,
+        longitude : location.coords.longitude,
+        latitudeDelta : 0.05,
+        longitudeDelta : 0.05,
+      });
+    }
   }, []);
 
   // 情報送信
@@ -218,7 +237,7 @@ export default function Component() {
       </View>
 
       <View style={styles.mapContainer}>
-        <MapView style={styles.map} provider={PROVIDER_GOOGLE}>
+        <MapView style={styles.map} provider={PROVIDER_GOOGLE} ref={(map) => setMap(map)}>
           {marker}
         </MapView>
         {/* <WebView
