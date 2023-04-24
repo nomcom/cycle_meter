@@ -74,32 +74,22 @@ export default function Component() {
       }
     );
   }, []);
-  useEffect(() => {
-    if(map){
-      (async () => {
-        const cam = await map.getCamera();
-        cam.zoom = 15;
-        map.setCamera(cam);
-      })();
-    }
-  }, [map]);
-
 
   // ************* イベント関係 *************
   // 情報取得
-  const getInfo = React.useCallback(async () => {
+  const getInfo = async () => {
     let location = await Location.getCurrentPositionAsync({});
     setTimeText(new Date(location.timestamp).toISOString());
     setLoc(location);
-    if(map){
+    if (map) {
       map.animateToRegion({
-        latitude : location.coords.latitude,
-        longitude : location.coords.longitude,
-        latitudeDelta : 0.05,
-        longitudeDelta : 0.05,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.03,
+        longitudeDelta: 0.03,
       });
     }
-  }, []);
+  };
 
   // 情報送信
   const sendInfo = React.useCallback(async () => {
@@ -237,7 +227,14 @@ export default function Component() {
       </View>
 
       <View style={styles.mapContainer}>
-        <MapView style={styles.map} provider={PROVIDER_GOOGLE} ref={(map) => setMap(map)}>
+        <MapView
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          ref={(map) => setMap(map)}
+          onMapReady={(event) => {
+            getInfo();
+          }}
+        >
           {marker}
         </MapView>
         {/* <WebView
