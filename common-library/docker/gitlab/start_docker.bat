@@ -16,8 +16,9 @@ set GITLAB_WEB_IP=127.0.0.1
 set GITLAB_WEB_PORT=8080
 set GITLAB_SHELL_PORT=8022
 
-@REM REM ‰Šúİ’è
-@REM wsl --install -d %DIST%
+REM ‰Šúİ’è
+wsl --install -d %DIST%
+
 @REM REM Docker ÅV‰»
 @REM wsl -d %DIST% -e sudo apt-get update
 @REM wsl -d %DIST% -e sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
