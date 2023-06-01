@@ -42,9 +42,14 @@ wsl -d %DIST% -e sudo docker run --detach ^
     --restart always ^
     %GITLAB_IMAGE%
 
+@REM REM WSL内のコンテナにコピー
+@REM wsl -d %DIST% -e sudo docker cp to_gitlab_container %GITLAB_CONTAINER_NAME%:./
+
+REM 起動を待つ
 REM wsl -d %DIST% -e sudo docker logs -f %GITLAB_CONTAINER_NAME%
+wsl -d %DIST% -e ./check_gitlab_started.sh
 
-
+REM 起動後のメッセージ
 echo 接続先： http://%GITLAB_WEB_IP%:%GITLAB_WEB_PORT%/
 echo rootパスワード：
 wsl -d %DIST% -e "cat %GITLAB_HOME%/config/initial_root_password | grep Password"
