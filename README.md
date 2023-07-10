@@ -44,10 +44,21 @@ npx firebase deploy
 ### frontend
 - BackEnd(DBデータ取得先) Rest URL
    - VITE_REST_URL_BASE
-- Firebase用
+     - 【取得元】Firebase Realtime DatabaseのURL
+       https://console.firebase.google.com/
+- Firebase Storage用
    - VITE_STORAGEBUCKET
+     - 【取得元】Firebase StorageのURLから「gs://」を取った値
+       https://console.firebase.google.com/
 - Google Map表示用
    - VITE_GOOGLE_MAP_API_KEY
+     - 【取得元】Google Cloudコンソールから「APIキー」作成（アプリケーションの制限＝
+ウェブサイト）
+       https://console.cloud.google.com/apis/credentials/
+- Firebase Hosting環境にデプロイ用
+   - FIREBASE_SERVICE_ACCOUNT_CYCLE_54EE5
+     - 【取得元】Google Cloudコンソールから「サービス アカウント」作成
+       https://console.cloud.google.com/apis/credentials/
 
 #### 取得元
 ##### デバッグ環境(npm run dev == vite)
@@ -56,8 +67,13 @@ npx firebase deploy
 
 ##### 本番環境(npm run deploy)
 1. .envに直書き
-2. フレームワークviteがbuild時にjsに埋め込み ★要改善
+2. フレームワークviteがbuild時にjsに埋め込み
 3. 本番環境にjsをデプロイ
+
+##### Firebase Hosting環境(mainブランチにマージした場合に自動ビルド)
+1. GitHub ActionsのSecretsに設定
+2. ワークフロー(firebase-hosting-merge.ymlなど)がFirebase Hosting環境の.envに展開
+3. ※以降、「本番環境」と同様
 
 ### mobile
 - Firebase用
@@ -69,8 +85,12 @@ npx firebase deploy
    - APPID
 - Google Map表示用
    - GOOGLEMAP_ANDROID_API_KEY
+     - 【取得元】Google Cloudコンソールから「APIキー」作成（アプリケーションの制限＝Android アプリ）
+       https://console.cloud.google.com/apis/credentials/
 - Expoビルド用
    - EXPO_TOKEN
+     - 【取得元】ExpoのページからDashboard > Access tokens
+       https://expo.dev/
   
 ##### デバッグ環境(npm run dev == vite)
 T.B.D
