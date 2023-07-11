@@ -341,7 +341,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="drawer drawer-mobile" style={{ height: "100%" }}>
+    <div className="drawer lg:drawer-open" style={{ height: "100%" }}>
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content">
         <GoogleMap
