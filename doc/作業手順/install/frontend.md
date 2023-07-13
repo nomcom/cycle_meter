@@ -21,6 +21,8 @@ Node, TypeScriptをインストールして、npmのパスを通す。※省略
 
 ## Vite
 
+## Vite 本体
+
 Frontend開発環境/ビルドツール
 https://ja.vitejs.dev/guide/
 
@@ -47,6 +49,20 @@ npm create vite@latest
 cd 【プロジェクト名】
 npm install 
 ```
+
+## vite-plugin-pages
+
+ファイル構成をそのままURLにマッピングする(ファイルベースルーティング)ライブラリ
+https://github.com/hannoeru/vite-plugin-pages
+
+1. プロジェクト作成＆初期化
+```
+npm install -D vite-plugin-pages
+npm install react-router react-router-dom
+```
+
+2. 設定ファイル(vite.config.js)修正 ※URLのインストール手順参照
+3. 型定義ファイル(vite-env.d.ts)修正 ※URLのインストール手順参照
 
 
 ## CSS系
@@ -77,6 +93,23 @@ npm i -D daisyui@latest
 
 2. 設定ファイル(tailwind.config.js)修正 ※URLのインストール手順参照
 
+## Test系
+
+### Vitest 
+
+Vite用Unit testフレームワーク
+https://vitest.dev/guide/
+
+1. インストール
+```
+npm install -D vitest
+npm i -D @vitest/coverage-v8
+```
+
+2. 設定ファイル(tailwind.config.js)修正 ※URLのインストール手順参照
+
+3. 設定ファイル(tailwind.config.js)のcoverage関連をtest.coverage.provider、test.coverage.reporter修正 ※以下のURLのインストール手順参照
+https://vitest.dev/guide/coverage.html
 
 ## アプリ構成によって任意
 

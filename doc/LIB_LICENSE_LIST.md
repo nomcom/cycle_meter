@@ -14,6 +14,8 @@
 |ツール     |ライセンス     |備考|
 |---       |---           |---|
 |Vite      |MIT           ||
+|Vitest    |MIT           ||
+|vite-plugin-pages|MIT    |https://github.com/hannoeru/vite-plugin-pages|
 |Tailwind  |MIT           ||
 |daisyUI   |MIT           ||
 |Firebase  |Apache-2.0    |https://github.com/firebase/firebase-js-sdk|
