@@ -111,6 +111,30 @@ npm i -D @vitest/coverage-v8
 3. 設定ファイル(tailwind.config.js)のcoverage関連をtest.coverage.provider、test.coverage.reporter修正 ※以下のURLのインストール手順参照
 https://vitest.dev/guide/coverage.html
 
+
+### Vitest with React Testing Library
+
+React用Vitest設定
+https://www.robinwieruch.de/vitest-react-testing-library/
+
+1. インストール
+```
+npm install jsdom --save-dev
+npm install @testing-library/react @testing-library/jest-dom --save-dev
+```
+
+2. Vite設定ファイル(vite-project\vite.config.ts)修正 ※URLのインストール手順参照
+  - test.environment: "jsdom" を追加
+  - globals: true,
+  - setupFiles: './tests/setup.js',
+
+3. 上記で指定した場所にsetup.jsを追加 ※URLのインストール手順参照
+
+
+
+
+
+
 ## アプリ構成によって任意
 
 ### Firebase

@@ -15,6 +15,8 @@
 |---       |---           |---|
 |Vite      |MIT           ||
 |Vitest    |MIT           ||
+|jsdom     |MIT           ||
+|React Testing Library|MIT||
 |vite-plugin-pages|MIT    |https://github.com/hannoeru/vite-plugin-pages|
 |Tailwind  |MIT           ||
 |daisyUI   |MIT           ||
