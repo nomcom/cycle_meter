@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getStorage } from "firebase/storage";
+import { initializeApp } from "@firebase/app";
+import { getStorage } from "@firebase/storage";
 import { decode } from "base-64";
 
 if (typeof atob === "undefined") {

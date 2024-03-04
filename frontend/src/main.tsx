@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import "./index.css";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { Error404 } from "./components/elements/common/Error404";
@@ -28,13 +28,14 @@ const App = () => {
 
 setApiServer(import.meta.env.VITE_REST_URL_BASE);
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+root.render(
   <React.StrictMode>
     <div className="w-full h-[100vh] bg-slate-400">
       <Router>
         <App />
       </Router>
     </div>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );

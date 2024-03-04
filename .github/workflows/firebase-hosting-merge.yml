@@ -2,13 +2,13 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+"on":
   push:
     branches:
       - main
     paths:
-      - 'frontend/**'
-      - '!README.md'
+      - "frontend/**"
+      - "!README.md"
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
           npm run build:front
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CYCLE_54EE5 }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CYCLE_54EE5 }}"
           channelId: live
-          projectId: cycle-54ee5
+          projectId: nomfirebase

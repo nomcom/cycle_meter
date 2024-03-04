@@ -1,7 +1,7 @@
 {
   "rules": {
-    ".read": "now < 1696896000000", // 2023-10-10
-    ".write": "now < 1696896000000", // 2023-10-10
+    ".read": "now < 1728486000000",
+    ".write": "now < 1728486000000",
     "marker": {
       ".indexOn": "timestamp",
       "create": {
