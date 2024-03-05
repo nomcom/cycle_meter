@@ -50,7 +50,7 @@ module.exports = {
     ],
     extra: {
       eas: {
-        projectId: "5fa0eab4-ce91-4018-8a35-8bc4c68ecda1",
+        projectId: "c7d0bb0d-b108-4a82-a690-df584c1eac5a",
       },
       APIKEY: process.env.APIKEY,
       AUTHDOMAIN: process.env.AUTHDOMAIN,
