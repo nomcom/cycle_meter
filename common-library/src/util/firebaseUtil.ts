@@ -1,4 +1,4 @@
-import { ref, getBytes, FirebaseStorage } from "firebase/storage";
+import { ref, getBytes, FirebaseStorage } from "@firebase/storage";
 
 /**
  * Firestorageの参照からデータURLを取得する

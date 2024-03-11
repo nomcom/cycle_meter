@@ -148,9 +148,11 @@ const App: React.FC = () => {
 
   // Google Map Event
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onClick = React.useCallback((e: google.maps.MapMouseEvent) => {
-    //
-  }, []);
+  const onClick = React.useCallback(() =>
+    // e: google.maps.MapMouseEvent
+    {
+      //
+    }, []);
   const onClickMarker = React.useCallback(
     async (index: number) => {
       const loc = markers[index];

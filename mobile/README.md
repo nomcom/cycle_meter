@@ -58,3 +58,21 @@ npx eas secret:push --scope project --env-file ./.env
 ```
 
 npm install -g sharp-cli
+
+
+## Expo Cloud Build
+
+### credentials
+
+```
+npx eas credentials
+
+√ What do you want to do? » Set up a new keystore
+√ Assign a name to your build credentials: ... Build Credentials xxxxx
+√ Generate a new Android Keystore? ... yes
+Detected that you do not have keytool installed locally.
+✔ Generating keystore in the cloud...
+✔ Created keystore
+✔ Created Android build credentials Build Credentials xxxxx
+```
+
