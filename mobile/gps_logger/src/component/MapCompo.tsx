@@ -26,6 +26,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
+import * as MediaLibrary from "expo-media-library";
+
 import { ref, uploadBytes } from "firebase/storage";
 
 export default function Component() {
@@ -37,6 +39,8 @@ export default function Component() {
   const [imageDataUrl, setImage] = useState<string | null>(null);
   const [cameraStatus, requestCameraPermissions] =
     ImagePicker.useCameraPermissions();
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] =
+    useState(false);
 
   // ************* 初期化処理 *************
   useEffect(() => {
@@ -49,6 +53,10 @@ export default function Component() {
 
       // Camera
       if (!cameraStatus?.granted) requestCameraPermissions();
+
+      const { status: mediaStatus } =
+        await MediaLibrary.requestPermissionsAsync();
+      setHasMediaLibraryPermission(mediaStatus === "granted");
     };
     requestPermissions();
 
@@ -158,6 +166,10 @@ export default function Component() {
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
     setImage(result.assets[0].uri);
+
+    // 保存
+
+    await MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
   }, []);
 
   // ************* 画面要素関係 *************

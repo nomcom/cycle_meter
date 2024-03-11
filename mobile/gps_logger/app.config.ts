@@ -47,6 +47,14 @@ module.exports = {
             "アプリ $(PRODUCT_NAME) にLocationへのアクセスを許可します.",
         },
       ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
     ],
     extra: {
       eas: {
