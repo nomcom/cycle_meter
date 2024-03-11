@@ -1,7 +1,7 @@
 module.exports = {
   expo: {
     name: "gps_logger",
-    slug: "gps_logger",
+    slug: "gps-logger",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
